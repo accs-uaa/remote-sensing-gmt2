@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Calculate Topographic Properties
 # Author: Timm Nawrocki
-# Last Updated: 2022-01-02
+# Last Updated: 2022-02-20
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Calculate Topographic Properties" is a function that calculates multiple integer topographic properties from a float elevation raster.
 # ---------------------------------------------------------------------------
@@ -21,6 +21,9 @@ def calculate_topographic_properties(**kwargs):
 
     # Import packages
     import arcpy
+    from arcpy.sa import Con
+    from arcpy.sa import IsNull
+    from arcpy.sa import Raster
     from package_Geomorphometry import calculate_aspect
     from package_Geomorphometry import calculate_exposure
     from package_Geomorphometry import calculate_flow
@@ -58,6 +61,7 @@ def calculate_topographic_properties(**kwargs):
     float_folder = os.path.split(elevation_float)[0]
 
     # Define intermediate datasets
+    elevation_filled = os.path.join(float_folder, 'Elevation_Filled.tif')
     flow_accumulation = os.path.join(float_folder, 'Flow_Accumulation.tif')
     slope_float = os.path.join(float_folder, 'Slope.tif')
     aspect_float = os.path.join(float_folder, 'Aspect.tif')
@@ -88,13 +92,55 @@ def calculate_topographic_properties(**kwargs):
         print(f'\tVertical units ({z_unit}) and horizontal units ({reference_unit}) match.')
     print('\t----------')
 
+    #### CONVERT NODATA TO ZERO
+
+    # Create filled elevation raster if it does not already exist
+    if arcpy.Exists(elevation_filled) == 0:
+        print(f'\tFilling no data values in float elevation...')
+        iteration_start = time.time()
+        # Set snap raster and extent
+        arcpy.env.snapRaster = area_raster
+        arcpy.env.extent = Raster(area_raster).extent
+        # Set cell size environment
+        cell_size = arcpy.management.GetRasterProperties(elevation_float, 'CELLSIZEX', '').getOutput(0)
+        arcpy.env.cellSize = int(cell_size)
+        # Convert no data to zero values
+        elevation_nonull = Con(IsNull(elevation_float), 0, elevation_float)
+        # Export zero-filled raster
+        arcpy.management.CopyRaster(elevation_nonull,
+                                    elevation_filled,
+                                    '',
+                                    '',
+                                    '-2147483648',
+                                    'NONE',
+                                    'NONE',
+                                    '32_BIT_FLOAT',
+                                    'NONE',
+                                    'NONE',
+                                    'TIFF',
+                                    'NONE',
+                                    'CURRENT_SLICE',
+                                    'NO_TRANSPOSE'
+                                    )
+        # End timing
+        iteration_end = time.time()
+        iteration_elapsed = int(iteration_end - iteration_start)
+        iteration_success_time = datetime.datetime.now()
+        # Report success
+        print(
+            f'\tCompleted at {iteration_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=iteration_elapsed)})')
+        print('\t----------')
+    else:
+        print(f'\tFilled float elevation already exists.')
+        print('\t----------')
+
     #### CALCULATE FOUNDATIONAL TOPOGRAPHY DATASETS
 
     # Calculate integer elevation if it does not already exist
     if arcpy.Exists(elevation_integer) == 0:
         print(f'\tCalculating integer elevation...')
         iteration_start = time.time()
-        calculate_integer_elevation(area_raster, elevation_float, elevation_integer)
+        calculate_integer_elevation(area_raster, elevation_filled, elevation_integer)
         # End timing
         iteration_end = time.time()
         iteration_elapsed = int(iteration_end - iteration_start)
@@ -112,7 +158,7 @@ def calculate_topographic_properties(**kwargs):
         # Calculate slope
         print(f'\tCalculating slope...')
         iteration_start = time.time()
-        calculate_slope(area_raster, elevation_float, z_unit, slope_float, slope_integer)
+        calculate_slope(area_raster, elevation_filled, z_unit, slope_float, slope_integer)
         # End timing
         iteration_end = time.time()
         iteration_elapsed = int(iteration_end - iteration_start)
@@ -130,7 +176,7 @@ def calculate_topographic_properties(**kwargs):
         # Calculate aspect
         print(f'\tCalculating aspect...')
         iteration_start = time.time()
-        calculate_aspect(area_raster, elevation_float, z_unit, aspect_float, aspect_integer)
+        calculate_aspect(area_raster, elevation_filled, z_unit, aspect_float, aspect_integer)
         # End timing
         iteration_end = time.time()
         iteration_elapsed = int(iteration_end - iteration_start)
@@ -148,7 +194,7 @@ def calculate_topographic_properties(**kwargs):
         # Calculate flow direction
         print(f'\tCalculating flow direction...')
         iteration_start = time.time()
-        calculate_flow(area_raster, elevation_float, flow_accumulation)
+        calculate_flow(area_raster, elevation_filled, flow_accumulation)
         # End timing
         iteration_end = time.time()
         iteration_elapsed = int(iteration_end - iteration_start)
@@ -184,7 +230,7 @@ def calculate_topographic_properties(**kwargs):
     if arcpy.Exists(heatload_output) == 0:
         print('\tCalculating heat load index...')
         iteration_start = time.time()
-        calculate_heat_load(area_raster, elevation_float, slope_float, aspect_float, 10000, heatload_output)
+        calculate_heat_load(area_raster, elevation_filled, slope_float, aspect_float, 10000, heatload_output)
         # End timing
         iteration_end = time.time()
         iteration_elapsed = int(iteration_end - iteration_start)
@@ -201,7 +247,7 @@ def calculate_topographic_properties(**kwargs):
     if arcpy.Exists(position_output) == 0:
         print(f'\tCalculating topographic position...')
         iteration_start = time.time()
-        calculate_position(area_raster, elevation_float, position_width, position_output)
+        calculate_position(area_raster, elevation_filled, position_width, position_output)
         # End timing
         iteration_end = time.time()
         iteration_elapsed = int(iteration_end - iteration_start)
@@ -235,7 +281,7 @@ def calculate_topographic_properties(**kwargs):
     if arcpy.Exists(roughness_output) == 0:
         print(f'\tCalculating roughness...')
         iteration_start = time.time()
-        calculate_roughness(area_raster, elevation_float, 10, roughness_output)
+        calculate_roughness(area_raster, elevation_filled, 10, roughness_output)
         # End timing
         iteration_end = time.time()
         iteration_elapsed = int(iteration_end - iteration_start)
@@ -269,7 +315,7 @@ def calculate_topographic_properties(**kwargs):
     if arcpy.Exists(surfacerelief_output) == 0:
         print(f'\tCalculating surface relief ratio...')
         iteration_start = time.time()
-        calculate_surface_relief(area_raster, elevation_float, 10000, surfacerelief_output)
+        calculate_surface_relief(area_raster, elevation_filled, 10000, surfacerelief_output)
         # End timing
         iteration_end = time.time()
         iteration_elapsed = int(iteration_end - iteration_start)
@@ -286,7 +332,7 @@ def calculate_topographic_properties(**kwargs):
     if arcpy.Exists(wetness_output) == 0:
         print(f'\tCalculating topographic wetness...')
         iteration_start = time.time()
-        calculate_wetness(area_raster, elevation_float, flow_accumulation, slope_float, 100, wetness_output)
+        calculate_wetness(area_raster, elevation_filled, flow_accumulation, slope_float, 100, wetness_output)
         # End timing
         iteration_end = time.time()
         iteration_elapsed = int(iteration_end - iteration_start)

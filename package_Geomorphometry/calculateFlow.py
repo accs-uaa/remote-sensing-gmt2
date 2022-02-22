@@ -56,7 +56,7 @@ def calculate_flow(area_raster, elevation_float, flow_accumulation):
     arcpy.management.CopyRaster(accumulation_raster,
                                 flow_accumulation,
                                 '',
-                                '0',
+                                '',
                                 '-2147483648',
                                 'NONE',
                                 'NONE',

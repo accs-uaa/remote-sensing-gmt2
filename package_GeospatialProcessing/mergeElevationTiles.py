@@ -148,8 +148,8 @@ def merge_elevation_tiles(**kwargs):
                                        '32_BIT_FLOAT',
                                        cell_size,
                                        '1',
-                                       'LAST',
-                                       'LAST')
+                                       'FIRST',
+                                       'FIRST')
     # Enforce correct projection
     arcpy.management.DefineProjection(dem_composite, output_system)
     # End timing

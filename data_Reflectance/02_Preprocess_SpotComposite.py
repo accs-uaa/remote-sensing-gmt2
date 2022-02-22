@@ -25,14 +25,14 @@ tile_folder = os.path.join(project_folder, 'Data_Input/imagery/spot/tiles_proces
 composite_folder = os.path.join(project_folder, 'Data_Input/imagery/spot/composite')
 
 # Define geodatabases
-work_geodatabase = os.path.join(project_folder, 'AlphabetHillsBrowseBiomass.gdb')
+work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
 
 # Define input datasets
-alphabet_raster = os.path.join(project_folder, 'Data_Input/AlphabetHills_StudyArea.tif')
+gmt2_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
 
 # Define output datasets
-imagery_composite = os.path.join(composite_folder, 'Alphabet_SpotComposite_Original.tif')
-imagery_segmentation = os.path.join(composite_folder, 'Alphabet_SpotComposite_AKALB.tif')
+imagery_composite = os.path.join(composite_folder, 'GMT2_SpotComposite_Original.tif')
+imagery_segmentation = os.path.join(composite_folder, 'GMT2_SpotComposite_AKALB.tif')
 
 # List imagery tiles
 print('Searching for imagery tiles...')
@@ -68,7 +68,7 @@ kwargs_composite = {'cell_size': 2,
                     'output_projection': 3338,
                     'geographic_transformation': '',
                     'conversion_factor': 10,
-                    'input_array': [alphabet_raster] + unprocessed_tiles,
+                    'input_array': [gmt2_raster] + unprocessed_tiles,
                     'output_array': [imagery_composite, imagery_segmentation]
                     }
 

@@ -2,7 +2,7 @@
 ---------------------------------------------------------------------------
 Cloud-reduced Seasonal Median Composites of Sentinel 2 Imagery circa 2017-2021
 Author: Timm Nawrocki, Alaska Center for Conservation Science
-Last Updated: 2022-01-01
+Last Updated: 2022-02-21
 Usage: Must be executed from the Google Earth Engine code editor.
 Description: This script produces a set of cloud-reduced median composite for bands 1-12 plus Enhanced Vegetation Index-2 (EVI2), Normalized Burn Ratio (NBR), Normalized Difference Moisture Index (NDMI), Normalized Difference Snow Index (NDSI), Normalized Difference Vegetation Index (NDVI), Normalized Difference Water Index (NDWI) using the Sentinel-2 Surface Reflectance and Top-Of-Atmosphere image collections. Composites are centered around June 10, July 30, August 20, and September 15.
 ---------------------------------------------------------------------------*/
@@ -10,7 +10,7 @@ Description: This script produces a set of cloud-reduced median composite for ba
 // 1. DEFINE PROPERTIES
 
 // Define an area of interest geometry.
-var area_feature = ee.FeatureCollection('projects/accs-geospatial-processing/assets/alphabethills_studyarea');
+var area_feature = ee.FeatureCollection('projects/accs-geospatial-processing/assets/gmt2_studyarea');
 
 // Define properties
 var start_year = 2015
@@ -222,7 +222,7 @@ var filter_september = ee.Filter.or(
   ee.Filter.date('2019-08-20', '2019-10-10'),
   ee.Filter.date('2020-08-20', '2020-10-10'),
   ee.Filter.date('2021-08-20', '2021-10-10'));
-var collection_september = s2sr_masked.filter(filter_september);
+var collection_september = s2_masked.filter(filter_september);
 
 // Make median composites from the image collections.
 var median_june = collection_june.median();
@@ -335,7 +335,7 @@ var september_ndwi = ee.Image(median_september).select(['NDWI']);
 Export.image.toDrive({
   image: june_2_blue,
   description: 'Sent2_06_2_blue',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -343,7 +343,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_3_green,
   description: 'Sent2_06_3_green',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -351,7 +351,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_4_red,
   description: 'Sent2_06_4_red',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -359,7 +359,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_5_redEdge1,
   description: 'Sent2_06_5_redEdge1',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -367,7 +367,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_6_redEdge2,
   description: 'Sent2_06_6_redEdge2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -375,7 +375,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_7_redEdge3,
   description: 'Sent2_06_7_redEdge3',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -383,7 +383,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_8_nearInfrared,
   description: 'Sent2_06_8_nearInfrared',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -391,7 +391,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_8a_redEdge4,
   description: 'Sent2_06_8a_redEdge4',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -399,7 +399,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_11_shortInfrared1,
   description: 'Sent2_06_11_shortInfrared1',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -407,7 +407,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_12_shortInfrared2,
   description: 'Sent2_06_12_shortInfrared2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -415,7 +415,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_evi2,
   description: 'Sent2_06_evi2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -423,7 +423,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_nbr,
   description: 'Sent2_06_nbr',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -431,7 +431,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_ndmi,
   description: 'Sent2_06_ndmi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -439,7 +439,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_ndsi,
   description: 'Sent2_06_ndsi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -447,7 +447,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_ndvi,
   description: 'Sent2_06_ndvi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -455,7 +455,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: june_ndwi,
   description: 'Sent2_06_ndwi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -465,7 +465,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_2_blue,
   description: 'Sent2_07_2_blue',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -473,7 +473,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_3_green,
   description: 'Sent2_07_3_green',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -481,7 +481,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_4_red,
   description: 'Sent2_07_4_red',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -489,7 +489,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_5_redEdge1,
   description: 'Sent2_07_5_redEdge1',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -497,7 +497,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_6_redEdge2,
   description: 'Sent2_07_6_redEdge2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -505,7 +505,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_7_redEdge3,
   description: 'Sent2_07_7_redEdge3',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -513,7 +513,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_8_nearInfrared,
   description: 'Sent2_07_8_nearInfrared',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -521,7 +521,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_8a_redEdge4,
   description: 'Sent2_07_8a_redEdge4',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -529,7 +529,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_11_shortInfrared1,
   description: 'Sent2_07_11_shortInfrared1',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -537,7 +537,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_12_shortInfrared2,
   description: 'Sent2_07_12_shortInfrared2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -545,7 +545,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_evi2,
   description: 'Sent2_07_evi2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -553,7 +553,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_nbr,
   description: 'Sent2_07_nbr',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -561,7 +561,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_ndmi,
   description: 'Sent2_07_ndmi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -569,7 +569,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_ndsi,
   description: 'Sent2_07_ndsi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -577,7 +577,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_ndvi,
   description: 'Sent2_07_ndvi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -585,7 +585,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: july_ndwi,
   description: 'Sent2_07_ndwi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -595,7 +595,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_2_blue,
   description: 'Sent2_08_2_blue',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -603,7 +603,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_3_green,
   description: 'Sent2_08_3_green',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -611,7 +611,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_4_red,
   description: 'Sent2_08_4_red',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -619,7 +619,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_5_redEdge1,
   description: 'Sent2_08_5_redEdge1',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -627,7 +627,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_6_redEdge2,
   description: 'Sent2_08_6_redEdge2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -635,7 +635,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_7_redEdge3,
   description: 'Sent2_08_7_redEdge3',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -643,7 +643,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_8_nearInfrared,
   description: 'Sent2_08_8_nearInfrared',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -651,7 +651,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_8a_redEdge4,
   description: 'Sent2_08_8a_redEdge4',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -659,7 +659,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_11_shortInfrared1,
   description: 'Sent2_08_11_shortInfrared1',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -667,7 +667,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_12_shortInfrared2,
   description: 'Sent2_08_12_shortInfrared2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -675,7 +675,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_evi2,
   description: 'Sent2_08_evi2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -683,7 +683,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_nbr,
   description: 'Sent2_08_nbr',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -691,7 +691,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_ndmi,
   description: 'Sent2_08_ndmi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -699,7 +699,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_ndsi,
   description: 'Sent2_08_ndsi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -707,7 +707,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_ndvi,
   description: 'Sent2_08_ndvi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -715,7 +715,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: august_ndwi,
   description: 'Sent2_08_ndwi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -725,7 +725,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_2_blue,
   description: 'Sent2_09_2_blue',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -733,7 +733,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_3_green,
   description: 'Sent2_09_3_green',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -741,7 +741,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_4_red,
   description: 'Sent2_09_4_red',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -749,7 +749,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_5_redEdge1,
   description: 'Sent2_09_5_redEdge1',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -757,7 +757,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_6_redEdge2,
   description: 'Sent2_09_6_redEdge2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -765,7 +765,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_7_redEdge3,
   description: 'Sent2_09_7_redEdge3',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -773,7 +773,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_8_nearInfrared,
   description: 'Sent2_09_8_nearInfrared',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -781,7 +781,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_8a_redEdge4,
   description: 'Sent2_09_8a_redEdge4',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -789,7 +789,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_11_shortInfrared1,
   description: 'Sent2_09_11_shortInfrared1',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -797,7 +797,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_12_shortInfrared2,
   description: 'Sent2_09_12_shortInfrared2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -805,7 +805,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_evi2,
   description: 'Sent2_09_evi2',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -813,7 +813,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_nbr,
   description: 'Sent2_09_nbr',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -821,7 +821,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_ndmi,
   description: 'Sent2_09_ndmi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -829,7 +829,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_ndsi,
   description: 'Sent2_09_ndsi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 20,
   region: area_feature,
   maxPixels: 1e12
@@ -837,7 +837,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_ndvi,
   description: 'Sent2_09_ndvi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12
@@ -845,7 +845,7 @@ Export.image.toDrive({
 Export.image.toDrive({
   image: september_ndwi,
   description: 'Sent2_09_ndwi',
-  folder: 'alphabethills_sentinel2',
+  folder: 'gmt2_sentinel2',
   scale: 10,
   region: area_feature,
   maxPixels: 1e12

@@ -66,7 +66,7 @@ def calculate_aspect(area_raster, elevation_float, z_unit, aspect_float, aspect_
     arcpy.management.CopyRaster(aspect_raster,
                                 aspect_float,
                                 '',
-                                '0',
+                                '',
                                 '-2147483648',
                                 'NONE',
                                 'NONE',

@@ -67,7 +67,7 @@ def calculate_slope(area_raster, elevation_float, z_unit, slope_float, slope_int
     arcpy.management.CopyRaster(slope_raster,
                                 slope_float,
                                 '',
-                                '0',
+                                '',
                                 '-2147483648',
                                 'NONE',
                                 'NONE',

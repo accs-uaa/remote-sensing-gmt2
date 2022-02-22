@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Compile multiband Spot tiles
 # Author: Timm Nawrocki
-# Last Updated: 2022-01-12
+# Last Updated: 2022-02-20
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Compile multiband Spot tiles" compiles blue, green, red, and infrared bands (in that order) from Spot RGB and CIR tiles.
 # ---------------------------------------------------------------------------

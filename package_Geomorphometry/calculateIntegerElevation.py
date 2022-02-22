@@ -40,7 +40,7 @@ def calculate_integer_elevation(area_raster, elevation_float, elevation_integer)
 
     # Round to integer
     print(f'\t\tConverting values to integers...')
-    integer_raster = Int(Raster(elevation_float) + 0.5)
+    integer_raster = Int((Raster(elevation_float) * 10) + 0.5)
 
     # Extract to area raster
     print('\t\tExtracting raster to area...')

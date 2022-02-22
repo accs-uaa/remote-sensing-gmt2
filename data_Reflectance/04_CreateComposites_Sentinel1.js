@@ -2,13 +2,13 @@
 ---------------------------------------------------------------------------
 Median Growing-season Composite Sentinel 1 SAR for 2015-2021
 Author: Timm Nawrocki, Alaska Center for Conservation Science
-Last Updated: 2022-01-01
+Last Updated: 2022-02-21
 Usage: Must be executed from the Google Earth Engine code editor.
 Description: This script produces median composites using ascending orbitals for the VV and VH polarizations from Sentinel-1.
 ---------------------------------------------------------------------------*/
 
 // Define an area of interest geometry.
-var area_feature = ee.FeatureCollection('projects/accs-geospatial-processing/assets/alphabethills_studyarea');
+var area_feature = ee.FeatureCollection('projects/accs-geospatial-processing/assets/gmt2_studyarea');
 
 // Import the Sentinel-1 Image Collection VV and VH polarizations within study area and date range
 var s1 = ee.ImageCollection('COPERNICUS/S1_GRD')
@@ -46,7 +46,7 @@ Map.addLayer(outlines, {palette: 'FFFF00'}, 'Study Area');
 Export.image.toDrive({
     image: vv,
     description: 'Sent1_vv',
-    folder: 'alphabethills_sentinel1',
+    folder: 'gmt2_sentinel1',
     scale: 10,
     region: area_feature,
     maxPixels: 1e12
@@ -54,7 +54,7 @@ Export.image.toDrive({
 Export.image.toDrive({
     image: vh,
     description: 'Sent1_vh',
-    folder: 'alphabethills_sentinel1',
+    folder: 'gmt2_sentinel1',
     scale: 10,
     region: area_feature,
     maxPixels: 1e12

@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Create composite USGS 3DEP 5m
 # Author: Timm Nawrocki
-# Last Updated: 2022-01-14
+# Last Updated: 2022-02-20
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Create composite USGS 3DEP 5m" combines individual DEM tiles and reprojects to NAD 1983 Alaska Albers.
 # ---------------------------------------------------------------------------
@@ -17,16 +17,16 @@ drive = 'N:/'
 root_folder = 'ACCS_Work'
 
 # Define folder structure
-project_folder = os.path.join(drive, root_folder, 'Projects/WildlifeEcology/Moose_AlphabetHills/Data')
+project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
 topography_folder = os.path.join(project_folder, 'Data_Input/topography')
 tile_folder = os.path.join(topography_folder, 'tiles')
 projected_folder = os.path.join(topography_folder, 'tiles_projected')
 
 # Define geodatabases
-work_geodatabase = os.path.join(project_folder, 'AlphabetHillsBrowseBiomass.gdb')
+work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
 
 # Define input datasets
-alphabet_raster = os.path.join(project_folder, 'Data_Input/AlphabetHills_StudyArea.tif')
+gmt2_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
 
 # Define output datasets
 output_raster = os.path.join(topography_folder, 'float/Elevation.tif')
@@ -41,7 +41,7 @@ kwargs_merge = {'tile_folder': tile_folder,
                 'input_projection': 3338,
                 'output_projection': 3338,
                 'geographic_transformation': '',
-                'input_array': [alphabet_raster],
+                'input_array': [gmt2_raster],
                 'output_array': [output_raster]
                 }
 

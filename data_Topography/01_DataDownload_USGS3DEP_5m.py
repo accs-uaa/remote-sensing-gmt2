@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Download USGS 3DEP 5m Tiles
 # Author: Timm Nawrocki
-# Last Updated: 2022-01-14
+# Last Updated: 2022-02-20
 # Usage: Can be executed in an Anaconda Python 3.7 distribution or an ArcGIS Pro Python 3.6 distribution.
 # Description: "Download USGS 3DEP 5m Tiles" contacts a server to download a series of files specified in a csv table. The full url to the resources must be specified in the table. The table can be generated from The National Map Viewer web application.
 # ---------------------------------------------------------------------------
@@ -16,11 +16,11 @@ drive = 'N:/'
 root_folder = 'ACCS_Work'
 
 # Define data folder
-data_folder = os.path.join(drive, root_folder, 'Projects/WildlifeEcology/Moose_AlphabetHills/Data/Data_Input/topography')
+data_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data/Data_Input/topography')
 directory = os.path.join(data_folder, 'tiles')
 
 # Define input csv table
-input_table = os.path.join(data_folder, 'USGS_3DEP_5m_20220114.csv')
+input_table = os.path.join(data_folder, 'USGS_3DEP_5m_20220220.csv')
 url_column = 'url'
 
 # Download files

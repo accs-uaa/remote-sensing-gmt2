@@ -39,8 +39,8 @@ def generate_flowlines(**kwargs):
     work_geodatabase = kwargs['work_geodatabase']
     area_feature = kwargs['input_array'][0]
     elevation_raster = kwargs['input_array'][1]
-    river_feature = kwargs['output_array'][1]
-    stream_feature = kwargs['output_array'][2]
+    river_feature = kwargs['output_array'][0]
+    stream_feature = kwargs['output_array'][1]
 
     # Define intermediate dataset
     topography_folder = os.path.split(elevation_raster)[0]

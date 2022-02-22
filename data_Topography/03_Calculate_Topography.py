@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Calculate topographic properties
 # Author: Timm Nawrocki
-# Last Updated: 2022-01-14
+# Last Updated: 2022-02-20
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Calculate topographic properties" calculates integer versions of ten topographic indices for each grid using elevation float rasters.
 # ---------------------------------------------------------------------------
@@ -17,15 +17,15 @@ drive = 'N:/'
 root_folder = 'ACCS_Work'
 
 # Define folder structure
-project_folder = os.path.join(drive, root_folder, 'Projects/WildlifeEcology/Moose_AlphabetHills/Data')
+project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
 input_folder = os.path.join(project_folder, 'Data_Input/topography/float')
 output_folder = os.path.join(project_folder, 'Data_Input/topography/integer')
 
 # Define work geodatabase
-work_geodatabase = os.path.join(project_folder, 'AlphabetHillsBrowseBiomass.gdb')
+work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
 
 # Define input datasets
-alphabet_raster = os.path.join(project_folder, 'Data_Input/AlphabetHills_StudyArea.tif')
+gmt2_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
 elevation_float = os.path.join(input_folder, 'Elevation.tif')
 
 # Define output datasets
@@ -44,7 +44,7 @@ wetness_output = os.path.join(output_folder, 'Wetness.tif')
 # Create key word arguments
 kwargs_topography = {'z_unit': 'METER',
                      'position_width': 5000,
-                     'input_array': [alphabet_raster, elevation_float],
+                     'input_array': [gmt2_raster, elevation_float],
                      'output_array': [elevation_integer,
                                       slope_integer,
                                       aspect_integer,
