@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Post-process Sentinel-1 rasters
 # Author: Timm Nawrocki
-# Last Updated: 2022-01-14
+# Last Updated: 2022-02-21
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Post-process Sentinel-1 rasters" reprojects rasters, converts to integer, and extracts to the study area.
 # ---------------------------------------------------------------------------
@@ -21,15 +21,15 @@ drive = 'N:/'
 root_folder = 'ACCS_Work'
 
 # Define folder structure
-project_folder = os.path.join(drive, root_folder, 'Projects/WildlifeEcology/Moose_AlphabetHills/Data')
+project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
 unprocessed_folder = os.path.join(project_folder, 'Data_Input/imagery/sentinel-1/unprocessed')
 processed_folder = os.path.join(project_folder, 'Data_Input/imagery/sentinel-1/processed')
 
 # Define geodatabases
-work_geodatabase = os.path.join(project_folder, 'AlphabetHillsBrowseBiomass.gdb')
+work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
 
 # Define input datasets
-alphabet_raster = os.path.join(project_folder, 'Data_Input/AlphabetHills_StudyArea.tif')
+gmt2_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
 
 # List imagery tiles
 print('Searching for imagery tiles...')
@@ -78,7 +78,7 @@ for input_raster in unprocessed_rasters:
                             'output_projection': 3338,
                             'geographic_transformation': 'WGS_1984_(ITRF00)_To_NAD_1983',
                             'conversion_factor': conversion_factor,
-                            'input_array': [alphabet_raster, input_raster],
+                            'input_array': [gmt2_raster, input_raster],
                             'output_array': [output_raster]
                             }
 

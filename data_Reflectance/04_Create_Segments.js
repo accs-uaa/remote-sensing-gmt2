@@ -2,7 +2,7 @@
 ---------------------------------------------------------------------------
 Image segments from simple non-iterative clustering
 Author: Timm Nawrocki, Alaska Center for Conservation Science
-Last Updated: 2022-01-01
+Last Updated: 2022-02-21
 Usage: Must be executed from the Google Earth Engine code editor.
 Description: "Image clusters from simple non-iterative clustering" produces image segments and summarized bands from a raster asset.
 ---------------------------------------------------------------------------*/
@@ -10,8 +10,8 @@ Description: "Image clusters from simple non-iterative clustering" produces imag
 // 1. SETUP ANALYSIS
 
 // Import assets
-var segmentation_image = ee.Image('projects/accs-geospatial-processing/assets/alphabet_imagery');
-var area_feature = ee.FeatureCollection('projects/accs-geospatial-processing/assets/alphabet_studyarea');
+var segmentation_image = ee.Image('projects/accs-geospatial-processing/assets/gmt2_imagery');
+var area_feature = ee.FeatureCollection('projects/accs-geospatial-processing/assets/gmt2_studyarea');
 
 // Add image asset to map
 var rgbVis = {
@@ -111,8 +111,8 @@ Map.addLayer(clusters.randomVisualizer(), {}, 'clusters')
 // Export clusters to Google Drive.
 Export.image.toDrive({
   image: clusters,
-  description: 'Alphabet_Segments_Initial',
-  folder: 'alphabethills_segments',
+  description: 'GMT2_Segments_Initial',
+  folder: 'gmt2_segments',
   scale: 2,
   region: area_feature,
   maxPixels: 1e12

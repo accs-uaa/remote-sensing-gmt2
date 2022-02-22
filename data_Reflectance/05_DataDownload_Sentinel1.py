@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Download Sentinel-1 Data from Drive
 # Author: Timm Nawrocki
-# Last Updated: 2022-01-14
+# Last Updated: 2022-02-21
 # Usage: Must be executed in a Python 3.8 installation with Google API Python Client and PyDrive installed.
 # Description: "Download Sentinel-1 Data from Drive" programmatically downloads Sentinel-1 tiles from a Google Drive folder. The composites must first be calculated in Google Earth Engine and exported to the Google Drive folder.
 # ---------------------------------------------------------------------------
@@ -19,14 +19,14 @@ import pickle
 import time
 
 # Define target Google Drive folder
-google_folder = '13wtX8--BBF4m6G5lDMvbJY9TNnZkHXee'
+google_folder = '1nQzMde7tmHyCKGW4gcSxRF8E06Buj9-1'
 
 # Set root directory
 drive = 'N:/'
 root_folder = 'ACCS_Work'
 
 # Define folder structure
-data_folder = os.path.join(drive, root_folder, 'Projects/WildlifeEcology/Moose_AlphabetHills/Data/Data_Input/imagery/sentinel-1/unprocessed')
+data_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data/Data_Input/imagery/sentinel-1/unprocessed')
 credentials_folder = os.path.join(drive, root_folder, 'Administrative/Credentials')
 
 # Change working directory to credentials folder
