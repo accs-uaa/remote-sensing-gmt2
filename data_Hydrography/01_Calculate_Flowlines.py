@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Calculate flowlines
 # Author: Timm Nawrocki
-# Last Updated: 2022-02-21
+# Last Updated: 2022-03-22
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Calculate flowlines" calculates a stream network from a digital elevation model. The stream network is output as a line feature class, which likely will need to be manually corrected and edited in places.
 # ---------------------------------------------------------------------------
@@ -33,8 +33,8 @@ river_feature = os.path.join(work_geodatabase, 'GMT2_Rivers_DEM')
 stream_feature = os.path.join(work_geodatabase, 'GMT2_Streams_DEM')
 
 # Create key word arguments
-kwargs_flow = {'threshold': 50000,
-               'fill_value': 2,
+kwargs_flow = {'threshold': 20000,
+               'fill_value': 5,
                'work_geodatabase': work_geodatabase,
                'input_array': [gmt2_feature, elevation_raster],
                'output_array': [river_feature, stream_feature]

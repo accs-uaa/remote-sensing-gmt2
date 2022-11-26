@@ -8,6 +8,8 @@
 # ---------------------------------------------------------------------------
 
 # Import functions from modules
+from package_Statistics.determineOptimalThreshold import determine_optimal_threshold
+from package_Statistics.determineOptimalThreshold import test_binary_threshold
 from package_Statistics.multiclassTrainTest import multiclass_train_test
 from package_Statistics.multiclassCrossValidation import multiclass_cross_validation
 from package_Statistics.multiclassPredict import multiclass_predict

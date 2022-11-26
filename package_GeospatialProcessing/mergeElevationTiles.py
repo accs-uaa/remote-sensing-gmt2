@@ -41,8 +41,8 @@ def merge_elevation_tiles(**kwargs):
     # Set overwrite option
     arcpy.env.overwriteOutput = True
 
-    # Use two thirds of cores on processes that can be split.
-    arcpy.env.parallelProcessingFactor = "75%"
+    # Specify core usage
+    arcpy.env.parallelProcessingFactor = '0'
 
     # Set snap raster
     arcpy.env.snapRaster = area_raster
@@ -148,8 +148,8 @@ def merge_elevation_tiles(**kwargs):
                                        '32_BIT_FLOAT',
                                        cell_size,
                                        '1',
-                                       'FIRST',
-                                       'FIRST')
+                                       'LAST',
+                                       'LAST')
     # Enforce correct projection
     arcpy.management.DefineProjection(dem_composite, output_system)
     # End timing
