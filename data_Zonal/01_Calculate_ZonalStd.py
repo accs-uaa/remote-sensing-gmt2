@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Calculate zonal standard deviations
 # Author: Timm Nawrocki
-# Last Updated: 2022-03-22
+# Last Updated: 2022-12-02
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Calculate zonal standard deviations" calculates zonal standard deviations of input datasets to segments defined in a raster.
 # ---------------------------------------------------------------------------
@@ -18,20 +18,20 @@ drive = 'N:/'
 root_folder = 'ACCS_Work'
 
 # Define folder structure
-project_folder = os.path.join(drive, root_folder, 'Projects/WildlifeEcology/Moose_AlphabetHills/Data')
+project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
 grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/gridded')
 composite_folder = os.path.join(project_folder, 'Data_Input/imagery/composite/processed')
 zonal_folder = os.path.join(project_folder, 'Data_Input/zonal')
 
 # Define work geodatabase
-work_geodatabase = os.path.join(project_folder, 'AlphabetHillsBrowseBiomass.gdb')
+work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
 
 # Define grids
-grid_list = ['A2', 'A3', 'A4', 'A5', 'A6',
+grid_list = ['A4', 'A5', 'A6', 'A7',
              'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7',
-             'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7',
-             'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7',
-             'E1', 'E2', 'E3', 'E4', 'E5', 'E6']
+             'C1', 'C2', 'C3', 'C4', 'C5', 'C6',
+             'D1', 'D2', 'D3', 'D4', 'D5',
+             'E1', 'E2', 'E3', 'E4', 'E5']
 
 # Create empty raster list
 input_rasters = []

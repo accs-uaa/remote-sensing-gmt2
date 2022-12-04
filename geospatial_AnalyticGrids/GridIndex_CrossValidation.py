@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Create cross-validation grid
 # Author: Timm Nawrocki
-# Last Updated: 2022-03-26
+# Last Updated: 2022-11-30
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Create cross-validation grid" creates a validation grid index from a manually-generated study area polygon.
 # ---------------------------------------------------------------------------
@@ -20,21 +20,21 @@ drive = 'N:/'
 root_folder = os.path.join(drive, 'ACCS_Work')
 
 # Define folder structure
-project_folder = os.path.join(drive, root_folder, 'Projects/WildlifeEcology/Moose_AlphabetHills/Data')
+project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
 
 # Define geodatabases
-work_geodatabase = os.path.join(project_folder, 'AlphabetHillsBrowseBiomass.gdb')
-segments_geodatabase = os.path.join(project_folder, 'AlphabetHills_Segments.gdb')
+work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
+segments_geodatabase = os.path.join(project_folder, 'GMT2_Segments.gdb')
 
 # Define input datasets
-alphabet_feature = os.path.join(work_geodatabase, 'Alphabet_StudyArea')
-alphabet_raster = os.path.join(project_folder, 'Data_Input/Alphabet_StudyArea.tif')
-segments_point = os.path.join(work_geodatabase, 'Alphabet_Segments_Final_Point')
-segments_polygon = os.path.join(work_geodatabase, 'Alphabet_Segments_Final_Polygon')
+study_feature = os.path.join(work_geodatabase, 'GMT2_StudyArea')
+study_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
+segments_point = os.path.join(work_geodatabase, 'GMT2_Segments_Final_Point')
+segments_polygon = os.path.join(work_geodatabase, 'GMT2_Segments_Final_Polygon')
 
 # Define output grid datasets
-validation_grid = os.path.join(work_geodatabase, 'Alphabet_GridIndex_Validation_10km')
-validation_raster = os.path.join(project_folder, 'Data_Input/validation/Alphabet_ValidationGroups.tif')
+validation_grid = os.path.join(work_geodatabase, 'GMT2_GridIndex_Validation_10km')
+validation_raster = os.path.join(project_folder, 'Data_Input/validation/GMT2_ValidationGroups.tif')
 grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/gridded')
 
 #### GENERATE VALIDATION GRID INDEX
@@ -43,7 +43,7 @@ grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/gridded'
 validation_kwargs = {'distance': '10 Kilometers',
                      'grid_field': 'grid_validation',
                      'work_geodatabase': work_geodatabase,
-                     'input_array': [alphabet_feature],
+                     'input_array': [study_feature],
                      'output_array': [validation_grid]
                      }
 
@@ -60,13 +60,13 @@ else:
 
 # Create key word arguments for validation raster
 raster_kwargs = {'work_geodatabase': work_geodatabase,
-                 'input_array': [validation_grid, alphabet_feature, alphabet_raster],
+                 'input_array': [validation_grid, study_feature, study_raster],
                  'output_array': [validation_raster]
                  }
 
 # Generate validation group raster
 if arcpy.Exists(validation_raster) == 0:
-    print('Converting validation grids to raster for North American Beringia...')
+    print('Converting validation grids to raster...')
     arcpy_geoprocessing(convert_validation_grid, **raster_kwargs)
     print('----------')
 else:
@@ -77,7 +77,7 @@ else:
 
 parse_kwargs = {'tile_name': 'grid_validation',
                 'work_geodatabase': segments_geodatabase,
-                'input_array': [alphabet_raster, validation_grid, segments_point, segments_polygon],
+                'input_array': [study_raster, validation_grid, segments_point, segments_polygon],
                 'output_folder': grid_folder
                 }
 

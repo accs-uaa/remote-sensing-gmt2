@@ -46,64 +46,6 @@ function mask_cloud_cirrus(image) {
 	return image.updateMask(mask);
 }
 
-// Define a function for EVI-2 calculation.
-function add_EVI2(image) {
-  // Assign variables to the red and green Sentinel-2 bands.
-  var red = image.select('B4');
-  var green = image.select('B3');
-  //Compute the Enhanced Vegetation Index-2 (EVI2).
-  var evi2_calc = red.subtract(green)
-    .divide(red.add(green.multiply(2.4)).add(1))
-    .rename('EVI2');
-  // Return the masked image with an EVI-2 band.
-  return image.addBands(evi2_calc);
-}
-
-// Define a function for NBR calculation.
-function add_NBR(image) {
-  //Compute the Normalized Burn Ratio (NBR).
-  var nbr_calc = image.normalizedDifference(['B8', 'B12'])
-    .rename('NBR');
-  // Return the masked image with an NBR band.
-  return image.addBands(nbr_calc);
-}
-
-// Define a function for NDMI calculation.
-function add_NDMI(image) {
-  //Compute the Normalized Difference Moisture Index (NDMI).
-  var ndmi_calc = image.normalizedDifference(['B8', 'B11'])
-    .rename('NDMI');
-  // Return the masked image with an NDMI band.
-  return image.addBands(ndmi_calc);
-}
-
-// Define a function for NDSI calculation.
-function add_NDSI(image) {
-  //Compute the Normalized Difference Snow Index (NDSI).
-  var ndsi_calc = image.normalizedDifference(['B3', 'B11'])
-    .rename('NDSI');
-  // Return the masked image with an NDSI band.
-  return image.addBands(ndsi_calc);
-}
-
-// Define a function for NDVI calculation.
-function add_NDVI(image) {
-  //Compute the Normalized Difference Vegetation Index (NDVI).
-  var ndvi_calc = image.normalizedDifference(['B8', 'B4'])
-    .rename('NDVI');
-  // Return the masked image with an NDVI band.
-  return image.addBands(ndvi_calc);
-}
-
-// Define a function for NDWI calculation.
-function add_NDWI(image) {
-  //Compute the Normalized Difference Water Index (NDWI).
-  var ndwi_calc = image.normalizedDifference(['B3', 'B8'])
-    .rename('NDWI');
-  // Return the masked image with an NDWI band.
-  return image.addBands(ndwi_calc);
-}
-
 // 3. CREATE CLOUD-REDUCED IMAGE COLLECTION
 
 // Define select spectral bands.
@@ -116,13 +58,7 @@ var bands = ['B2',
             'B8',
             'B8A',
             'B11',
-            'B12',
-            'EVI2',
-            'NBR',
-            'NDMI',
-            'NDSI',
-            'NDVI',
-            'NDWI']
+            'B12']
 
 // Import Sentinel 2 Cloud Probability
 var s2_cloud = ee.ImageCollection('COPERNICUS/S2_CLOUD_PROBABILITY')
@@ -149,17 +85,11 @@ var s2sr_join = ee.Join.saveFirst('cloud_mask').apply({
 var s2sr_masked = ee.ImageCollection(s2sr_join)
   .map(mask_cloud_probability)
   .map(mask_cloud_cirrus)
-  .map(add_EVI2)
-  .map(add_NBR)
-  .map(add_NDMI)
-  .map(add_NDSI)
-  .map(add_NDVI)
-  .map(add_NDWI)
   .select(bands);
 
 // 4. CREATE MEDIAN COMPOSITES
 
-// Filter image collection targeted around June 10.
+// Filter image collection targeted around July 10.
 var filter_midsummer = ee.Filter.or(
   ee.Filter.date('2022-06-20', '2022-08-20'));
 var collection_midsummer = s2sr_masked.filter(filter_midsummer);
@@ -195,8 +125,9 @@ Map.addLayer(outlines, {palette: 'FFFF00'}, 'Study Area');
 Export.image.toDrive({
   image: median_midsummer,
   description: 'Sent2_Midsummer',
-  folder: 'gmt2_sentinel2',
+  folder: 'gmt2_sentinel2_midsummer',
   scale: 10,
+  crs: 'EPSG:3338',
   region: area_feature,
   maxPixels: 1e12
 });

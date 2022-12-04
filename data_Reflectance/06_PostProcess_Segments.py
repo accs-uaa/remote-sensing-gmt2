@@ -2,19 +2,15 @@
 # ---------------------------------------------------------------------------
 # Post-process image segments
 # Author: Timm Nawrocki
-# Last Updated: 2022-02-21
+# Last Updated: 2022-11-30
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Post-process image segments" converts the segment output from Google Earth Engine to a standard format raster, polygon, and point set.
 # ---------------------------------------------------------------------------
 
 # Import packages
-import arcpy
-import datetime
 import os
 from package_GeospatialProcessing import arcpy_geoprocessing
-from package_GeospatialProcessing import merge_segmentation_imagery
 from package_GeospatialProcessing import postprocess_segments
-import time
 
 # Set root directory
 drive = 'N:/'
@@ -29,21 +25,20 @@ processed_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/pro
 work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
 
 # Define input datasets
-gmt2_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
+study_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
 segments_initial = os.path.join(unprocessed_folder, 'GMT2_Segments_Initial.tif')
 
 # Define output datasets
-segments_merge = os.path.join(processed_folder, 'GMT2_Segments_Merge.tif')
-segments_final = os.path.join(processed_folder, 'GMT2_Segments_Final.tif')
-segments_polygon = os.path.join(work_geodatabase, 'GMT2_Segments_Polygon')
-segments_point = os.path.join(work_geodatabase, 'GMT2_Segments_Point')
+segments_final = os.path.join(processed_folder, 'GMT2_Segments_Original.tif')
+segments_polygon = os.path.join(work_geodatabase, 'GMT2_Segments_Original_Polygon')
+segments_point = os.path.join(work_geodatabase, 'GMT2_Segments_Original_Point')
 
 #### POST-PROCESS IMAGE SEGMENTS
 
 # Create key word arguments
 kwargs_process = {'cell_size': 2,
                   'work_geodatabase': work_geodatabase,
-                  'input_array': [gmt2_raster, segments_initial],
+                  'input_array': [study_raster, segments_initial],
                   'output_array': [segments_final, segments_polygon, segments_point]
                   }
 

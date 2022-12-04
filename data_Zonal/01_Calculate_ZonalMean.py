@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Calculate zonal means
 # Author: Timm Nawrocki
-# Last Updated: 2022-03-29
+# Last Updated: 2022-12-01
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Calculate zonal means" calculates zonal means of input datasets to segments defined in a raster.
 # ---------------------------------------------------------------------------
@@ -18,26 +18,26 @@ drive = 'N:/'
 root_folder = 'ACCS_Work'
 
 # Define folder structure
-project_folder = os.path.join(drive, root_folder, 'Projects/WildlifeEcology/Moose_AlphabetHills/Data')
+project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
 grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/gridded')
 topography_folder = os.path.join(project_folder, 'Data_Input/topography/integer')
 hydrography_folder = os.path.join(project_folder, 'Data_Input/hydrography/processed')
-sent1_folder = os.path.join(project_folder, 'Data_Input/imagery/sentinel-1/processed')
-sent2_folder = os.path.join(project_folder, 'Data_Input/imagery/sentinel-2/processed')
-burn_folder = os.path.join(project_folder, 'Data_Input/imagery/burn/postprocessed')
+sent1_folder = os.path.join(project_folder, 'Data_Input/imagery/sentinel-1/growing_season')
+sent2_folder = os.path.join(project_folder, 'Data_Input/imagery/sentinel-2/growing_season')
+water_folder = os.path.join(project_folder, 'Data_Output/predicted_rasters/round_20221125/surface_water')
 composite_folder = os.path.join(project_folder, 'Data_Input/imagery/composite/processed')
 vegetation_folder = os.path.join(project_folder, 'Data_Input/vegetation/foliar_cover')
 zonal_folder = os.path.join(project_folder, 'Data_Input/zonal')
 
 # Define work geodatabase
-work_geodatabase = os.path.join(project_folder, 'AlphabetHillsBrowseBiomass.gdb')
+work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
 
 # Define grids
-grid_list = ['A2', 'A3', 'A4', 'A5', 'A6',
+grid_list = ['A4', 'A5', 'A6', 'A7',
              'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7',
-             'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7',
-             'D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7',
-             'E1', 'E2', 'E3', 'E4', 'E5', 'E6']
+             'C1', 'C2', 'C3', 'C4', 'C5', 'C6',
+             'D1', 'D2', 'D3', 'D4', 'D5',
+             'E1', 'E2', 'E3', 'E4', 'E5']
 
 # Create empty raster list
 input_rasters = []
@@ -70,11 +70,11 @@ for raster in sent2_rasters:
     raster_path = os.path.join(sent2_folder, raster)
     input_rasters.append(raster_path)
 
-# Create list of burn rasters
-arcpy.env.workspace = burn_folder
-burn_rasters = arcpy.ListRasters('*', 'TIF')
-for raster in burn_rasters:
-    raster_path = os.path.join(burn_folder, raster)
+# Create list of water rasters
+arcpy.env.workspace = water_folder
+water_rasters = arcpy.ListRasters('*', 'TIF')
+for raster in water_rasters:
+    raster_path = os.path.join(water_folder, raster)
     input_rasters.append(raster_path)
 
 # Create list of composite rasters
