@@ -9,6 +9,7 @@
 
 # Import functions from modules
 from package_GeospatialProcessing.arcpyGeoprocessing import arcpy_geoprocessing
+from package_GeospatialProcessing.aggregateSegments import aggregate_segments
 from package_GeospatialProcessing.calculateTopographicProperties import calculate_topographic_properties
 from package_GeospatialProcessing.calculateZonalStatistics import calculate_zonal_statistics
 from package_GeospatialProcessing.compileSpotMultiband import compile_spot_multiband

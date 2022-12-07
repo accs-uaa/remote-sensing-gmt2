@@ -24,7 +24,7 @@ project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BL
 
 # Define geodatabases
 work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
-segments_geodatabase = os.path.join(project_folder, 'GMT2_Segments.gdb')
+segments_geodatabase = os.path.join(project_folder, 'GMT2_Segments_Gridded.gdb')
 
 # Define input datasets
 study_feature = os.path.join(work_geodatabase, 'GMT2_StudyArea')

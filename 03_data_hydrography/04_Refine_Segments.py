@@ -31,9 +31,9 @@ floodplain_raster = os.path.join(hydrography_folder, 'Floodplain.tif')
 river_raster = os.path.join(hydrography_folder, 'River.tif')
 
 # Define output datasets
-segments_raster = os.path.join(segments_folder, 'GMT2_Segments_Final.tif')
-segments_final = os.path.join(work_geodatabase, 'GMT2_Segments_Final_Polygon')
-segments_point = os.path.join(work_geodatabase, 'GMT2_Segments_Final_Point')
+segments_raster = os.path.join(segments_folder, 'GMT2_Segments_Revised.tif')
+segments_final = os.path.join(work_geodatabase, 'GMT2_Segments_Revised_Polygon')
+segments_point = os.path.join(work_geodatabase, 'GMT2_Segments_Revised_Point')
 
 #### REFINE IMAGE SEGMENTS
 

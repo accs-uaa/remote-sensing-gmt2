@@ -46,6 +46,10 @@ def normalized_metrics(**kwargs):
     arcpy.env.snapRaster = area_raster
     arcpy.env.extent = Raster(area_raster).extent
 
+    # Set cell size environment
+    cell_size = arcpy.management.GetRasterProperties(area_raster, 'CELLSIZEX', '').getOutput(0)
+    arcpy.env.cellSize = cell_size
+
     # Set workspace
     arcpy.env.workspace = work_geodatabase
 

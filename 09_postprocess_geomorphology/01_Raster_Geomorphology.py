@@ -24,7 +24,7 @@ root_folder = 'ACCS_Work'
 project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
 segment_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/gridded')
 prediction_folder = os.path.join(project_folder, 'Data_Output/predicted_tables', round_date, 'geomorphology')
-raster_folder = os.path.join(project_folder, 'Data_Output/predicted_rasters', round_date, 'geomorphology')
+raster_folder = os.path.join(project_folder, 'Data_Output/predicted_rasters', round_date)
 output_folder = os.path.join(project_folder, 'Data_Output/output_rasters', round_date, 'geomorphology')
 
 # Define geodatabases
@@ -37,6 +37,11 @@ study_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
 output_raster = os.path.join(output_folder, 'GMT2_Geomorphology.tif')
 
 #### CREATE DISCRETE PHYSIOGRAPHY
+
+# Define and create geomorphology directory
+geomorphology_folder = os.path.join(raster_folder, 'geomorphology')
+if os.path.exists(geomorphology_folder) == 0:
+    os.mkdir(geomorphology_folder)
 
 # Define geomorphology dictionary
 geomorphology_dictionary = {'barren': 1,
@@ -52,7 +57,7 @@ geomorphology_dictionary = {'barren': 1,
 # Create key word arguments
 kwargs_discrete = {'segment_folder': segment_folder,
                    'prediction_folder': prediction_folder,
-                   'grid_folder': raster_folder,
+                   'grid_folder': geomorphology_folder,
                    'target_field': 'geomorphology',
                    'data_type': 'discrete',
                    'attribute_dictionary': geomorphology_dictionary,
@@ -85,6 +90,11 @@ for class_label in class_list:
     # Identify corresponding physiography label
     physiography_label = physiography_list[count - 1]
 
+    # Define and create physiography directory
+    probability_folder = os.path.join(raster_folder, 'geomorph_' + physiography_label)
+    if os.path.exists(probability_folder) == 0:
+        os.mkdir(probability_folder)
+
     # Define output raster
     physiography_name = physiography_label.capitalize()
     continuous_output = os.path.join(output_folder, f'GMT2_GeomorphProbability_{physiography_name}.tif')
@@ -92,7 +102,7 @@ for class_label in class_list:
     # Create key word arguments
     kwargs_continuous = {'segment_folder': segment_folder,
                          'prediction_folder': prediction_folder,
-                         'grid_folder': raster_folder,
+                         'grid_folder': probability_folder,
                          'target_field': class_label,
                          'data_type': 'continuous',
                          'attribute_dictionary': 'NA',
