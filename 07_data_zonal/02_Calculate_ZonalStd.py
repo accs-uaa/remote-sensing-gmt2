@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# Calculate zonal means
+# Calculate zonal standard deviations
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-01
+# Last Updated: 2022-12-02
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
-# Description: "Calculate zonal means" calculates zonal means of input datasets to segments defined in a raster.
+# Description: "Calculate zonal standard deviations" calculates zonal standard deviations of input datasets to segments defined in a raster.
 # ---------------------------------------------------------------------------
 
 # Import packages
@@ -19,14 +19,9 @@ root_folder = 'ACCS_Work'
 
 # Define folder structure
 project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
-grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/gridded')
-topography_folder = os.path.join(project_folder, 'Data_Input/topography/integer')
-hydrography_folder = os.path.join(project_folder, 'Data_Input/hydrography/processed')
-sent1_folder = os.path.join(project_folder, 'Data_Input/imagery/sentinel-1/growing_season')
-sent2_folder = os.path.join(project_folder, 'Data_Input/imagery/sentinel-2/growing_season')
-water_folder = os.path.join(project_folder, 'Data_Output/predicted_rasters/round_20221125/surface_water')
+grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/aggregated')
 composite_folder = os.path.join(project_folder, 'Data_Input/imagery/composite/processed')
-vegetation_folder = os.path.join(project_folder, 'Data_Input/vegetation/foliar_cover')
+maxar_folder = os.path.join(project_folder, 'Data_Input/imagery/maxar/processed')
 zonal_folder = os.path.join(project_folder, 'Data_Input/zonal')
 
 # Define work geodatabase
@@ -42,41 +37,6 @@ grid_list = ['A4', 'A5', 'A6', 'A7',
 # Create empty raster list
 input_rasters = []
 
-# Create list of topography rasters
-arcpy.env.workspace = topography_folder
-topography_rasters = arcpy.ListRasters('*', 'TIF')
-for raster in topography_rasters:
-    raster_path = os.path.join(topography_folder, raster)
-    input_rasters.append(raster_path)
-
-# Create list of hydrography rasters
-arcpy.env.workspace = hydrography_folder
-hydrography_rasters = arcpy.ListRasters('*', 'TIF')
-for raster in hydrography_rasters:
-    raster_path = os.path.join(hydrography_folder, raster)
-    input_rasters.append(raster_path)
-
-# Create list of Sentinel-1 rasters
-arcpy.env.workspace = sent1_folder
-sent1_rasters = arcpy.ListRasters('*', 'TIF')
-for raster in sent1_rasters:
-    raster_path = os.path.join(sent1_folder, raster)
-    input_rasters.append(raster_path)
-
-# Create list of Sentinel-2 rasters
-arcpy.env.workspace = sent2_folder
-sent2_rasters = arcpy.ListRasters('*', 'TIF')
-for raster in sent2_rasters:
-    raster_path = os.path.join(sent2_folder, raster)
-    input_rasters.append(raster_path)
-
-# Create list of water rasters
-arcpy.env.workspace = water_folder
-water_rasters = arcpy.ListRasters('*', 'TIF')
-for raster in water_rasters:
-    raster_path = os.path.join(water_folder, raster)
-    input_rasters.append(raster_path)
-
 # Create list of composite rasters
 arcpy.env.workspace = composite_folder
 composite_rasters = arcpy.ListRasters('*', 'TIF')
@@ -84,11 +44,11 @@ for raster in composite_rasters:
     raster_path = os.path.join(composite_folder, raster)
     input_rasters.append(raster_path)
 
-# Create list of vegetation rasters
-arcpy.env.workspace = vegetation_folder
-vegetation_rasters = arcpy.ListRasters('*', 'TIF')
-for raster in vegetation_rasters:
-    raster_path = os.path.join(vegetation_folder, raster)
+# Create list of maxar rasters
+arcpy.env.workspace = maxar_folder
+maxar_rasters = arcpy.ListRasters('*', 'TIF')
+for raster in maxar_rasters:
+    raster_path = os.path.join(maxar_folder, raster)
     input_rasters.append(raster_path)
 
 # Set workspace to default
@@ -114,12 +74,12 @@ for grid in grid_list:
 
         # Define output raster
         raster_name = os.path.split(input_raster)[1]
-        output_raster = os.path.join(output_folder, raster_name)
+        output_raster = os.path.join(output_folder, os.path.splitext(raster_name)[0] + '_STD.tif')
 
         # Create zonal summary if output raster does not already exist
         if arcpy.Exists(output_raster) == 0:
             # Create key word arguments
-            kwargs_zonal = {'statistic': 'MEAN',
+            kwargs_zonal = {'statistic': 'STD',
                             'zone_field': 'VALUE',
                             'work_geodatabase': work_geodatabase,
                             'input_array': [grid_raster, input_raster],

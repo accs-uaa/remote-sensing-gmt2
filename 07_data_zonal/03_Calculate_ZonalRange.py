@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# Calculate zonal standard deviations
+# Calculate zonal range
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-02
+# Last Updated: 2022-12-07
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
-# Description: "Calculate zonal standard deviations" calculates zonal standard deviations of input datasets to segments defined in a raster.
+# Description: "Calculate zonal range" calculates zonal range (maximum-minimum) of input datasets to segments defined in a raster.
 # ---------------------------------------------------------------------------
 
 # Import packages
@@ -19,8 +19,8 @@ root_folder = 'ACCS_Work'
 
 # Define folder structure
 project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
-grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/gridded')
-composite_folder = os.path.join(project_folder, 'Data_Input/imagery/composite/processed')
+grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/aggregated')
+maxar_folder = os.path.join(project_folder, 'Data_Input/imagery/maxar/processed')
 zonal_folder = os.path.join(project_folder, 'Data_Input/zonal')
 
 # Define work geodatabase
@@ -36,11 +36,11 @@ grid_list = ['A4', 'A5', 'A6', 'A7',
 # Create empty raster list
 input_rasters = []
 
-# Create list of Maxar rasters
-arcpy.env.workspace = composite_folder
-composite_rasters = arcpy.ListRasters('*', 'TIF')
-for raster in composite_rasters:
-    raster_path = os.path.join(composite_folder, raster)
+# Create list of maxar rasters
+arcpy.env.workspace = maxar_folder
+maxar_rasters = arcpy.ListRasters('*', 'TIF')
+for raster in maxar_rasters:
+    raster_path = os.path.join(maxar_folder, raster)
     input_rasters.append(raster_path)
 
 # Set workspace to default
@@ -66,12 +66,12 @@ for grid in grid_list:
 
         # Define output raster
         raster_name = os.path.split(input_raster)[1]
-        output_raster = os.path.join(output_folder, os.path.splitext(raster_name)[0] + '_STD.tif')
+        output_raster = os.path.join(output_folder, os.path.splitext(raster_name)[0] + '_RNG.tif')
 
         # Create zonal summary if output raster does not already exist
         if arcpy.Exists(output_raster) == 0:
             # Create key word arguments
-            kwargs_zonal = {'statistic': 'STD',
+            kwargs_zonal = {'statistic': 'RANGE',
                             'zone_field': 'VALUE',
                             'work_geodatabase': work_geodatabase,
                             'input_array': [grid_raster, input_raster],
