@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Aggregate segments
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-06
+# Last Updated: 2022-12-08
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Aggregate segments" is a function that aggregates segments based on thresholds of NDVI and NDWI.
 # ---------------------------------------------------------------------------
@@ -125,17 +125,37 @@ def aggregate_segments(**kwargs):
     print(f'\t\tCombining thresholded NDVI and NDWI...')
     iteration_start = time.time()
     combine_raster = Combine([ndvi_threshold, ndwi_threshold])
-    # Convert to polygon
+    # Convert to polygon and add attributes
     print(f'\t\tConverting to polygon...')
     arcpy.conversion.RasterToPolygon(combine_raster,
                                      output_polygon,
                                      'NO_SIMPLIFY',
                                      'VALUE',
                                      'SINGLE_OUTER_PART')
+    arcpy.management.DeleteField(output_polygon,
+                                 ['Id', 'gridcode'],
+                                 'DELETE_FIELDS')
+    arcpy.management.CalculateField(output_polygon,
+                                    'shape_m',
+                                    '!SHAPE.length!',
+                                    'PYTHON3')
+    arcpy.management.CalculateField(output_polygon,
+                                    'shape_m2',
+                                    '!SHAPE.area!',
+                                    'PYTHON3')
+    arcpy.management.CalculateField(output_polygon,
+                                    'segment_id',
+                                    '!OBJECTID!',
+                                    'PYTHON3')
     print(f'\t\tConverting to point...')
+    # Convert to points with shape attributes and coordinates
     arcpy.management.FeatureToPoint(output_polygon,
                                     output_points,
                                     'INSIDE')
+    arcpy.management.DeleteField(output_points,
+                                 ['ORIG_FID'],
+                                 'DELETE_FIELDS')
+    arcpy.management.AddXY(output_points)
     print(f'\t\tConverting to raster...')
     arcpy.conversion.PolygonToRaster(output_polygon,
                                      'OBJECTID',

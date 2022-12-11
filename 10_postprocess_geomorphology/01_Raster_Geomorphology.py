@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Create geomorphology rasters
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-04
+# Last Updated: 2022-12-08
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Create geomorphology rasters" combines tiles into a discrete geomorphology raster and probabilistic class rasters.
 # ---------------------------------------------------------------------------
@@ -36,7 +36,7 @@ study_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
 # Define output raster
 output_raster = os.path.join(output_folder, 'GMT2_Geomorphology.tif')
 
-#### CREATE DISCRETE PHYSIOGRAPHY
+#### CREATE DISCRETE GEOMORPHOLOGY
 
 # Define and create geomorphology directory
 geomorphology_folder = os.path.join(raster_folder, 'geomorphology')
@@ -46,13 +46,17 @@ if os.path.exists(geomorphology_folder) == 0:
 # Define geomorphology dictionary
 geomorphology_dictionary = {'barren': 1,
                             'dunes': 2,
-                            'non-patterned': 3,
-                            'polygonal, wet center': 4,
-                            'polygonal, wet trough': 5,
-                            'salt-killed': 6,
-                            'tidal marsh': 7,
-                            'water': 8
-                            }
+                            'non-patterned, drained': 3,
+                            'non_patterned, floodplain': 4,
+                            'non-patterned, mesic': 5,
+                            'permafrost troughs': 6,
+                            'polygonal, mesic center': 7,
+                            'polygonal, wet center': 8,
+                            'freshwater marsh': 9,
+                            'stream corridor': 10,
+                            'tidal marsh': 11,
+                            'salt-killed': 12,
+                            'water': 13}
 
 # Create key word arguments
 kwargs_discrete = {'segment_folder': segment_folder,
@@ -67,37 +71,40 @@ kwargs_discrete = {'segment_folder': segment_folder,
                    'output_array': [output_raster]
                    }
 
-# Convert predictions to physiography raster
+# Convert predictions to geomorphology raster
 if arcpy.Exists(output_raster) == 0:
-    print(f'Converting discrete predictions to physiography raster...')
+    print(f'Converting discrete predictions to geomorphology raster...')
     arcpy_geoprocessing(predictions_to_raster, **kwargs_discrete)
     print('----------')
 else:
     print('Discrete raster already exists.')
     print('----------')
 
-#### CREATE CONTINUOUS PHYSIOGRAPHY PROBABILITY
+#### CREATE CONTINUOUS GEOMORPHOLOGY PROBABILITY
 
-# Define class list and physiography list
+# Define class list and geomorphology list
 class_list = ['class_01', 'class_02', 'class_03', 'class_04',
-              'class_05', 'class_06', 'class_07', 'class_08']
-physiography_list = ['barren', 'dunes', 'nonpatterned', 'polywetcenter',
-                     'polywettrough', 'saltkilled', 'tidalmarsh', 'water']
+              'class_05', 'class_06', 'class_07', 'class_08',
+              'class_09', 'class_10', 'class_11', 'class_12',
+              'class_13']
+geomorphology_list = ['barren', 'dunes', 'nonpatterned_drained', 'nonpatterned_floodplain', 'nonpatterened_mesic'
+                                                                                            'permafrost_troughs',
+                      'poly_mesiccenter', 'poly_wetcenter', 'freshwater_marsh',
+                      'stream_corridor', 'tidal_marsh', 'salt_killed', 'water']
 
 # Iterate through each class and export a continuous probability raster
 count = 1
 for class_label in class_list:
-    # Identify corresponding physiography label
-    physiography_label = physiography_list[count - 1]
+    # Identify corresponding geomorphology label
+    geomorphology_label = geomorphology_list[count - 1]
 
-    # Define and create physiography directory
-    probability_folder = os.path.join(raster_folder, 'geomorph_' + physiography_label)
+    # Define and create geomorphology directory
+    probability_folder = os.path.join(raster_folder, 'geomorph_' + geomorphology_label)
     if os.path.exists(probability_folder) == 0:
         os.mkdir(probability_folder)
 
     # Define output raster
-    physiography_name = physiography_label.capitalize()
-    continuous_output = os.path.join(output_folder, f'GMT2_GeomorphProbability_{physiography_name}.tif')
+    continuous_output = os.path.join(output_folder, f'GMT2_Probability_{geomorphology_label}.tif')
 
     # Create key word arguments
     kwargs_continuous = {'segment_folder': segment_folder,
@@ -114,11 +121,11 @@ for class_label in class_list:
 
     # Convert predictions to probability raster
     if arcpy.Exists(continuous_output) == 0:
-        print(f'Converting probability predictions for {physiography_label} to raster...')
+        print(f'Converting probability predictions for {geomorphology_label} to raster...')
         arcpy_geoprocessing(predictions_to_raster, **kwargs_continuous)
         print('----------')
     else:
-        print(f'{physiography_name} raster already exists.')
+        print(f'{geomorphology_label} raster already exists.')
         print('----------')
 
     # Increase count

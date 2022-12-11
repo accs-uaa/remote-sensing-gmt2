@@ -19,7 +19,7 @@ root_folder = 'ACCS_Work'
 
 # Define folder structure
 project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
-grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/aggregated')
+grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/gridded')
 topography_folder = os.path.join(project_folder, 'Data_Input/topography/integer')
 hydrography_folder = os.path.join(project_folder, 'Data_Input/hydrography/processed')
 sent1_folder = os.path.join(project_folder, 'Data_Input/imagery/sentinel-1/growing_season')
@@ -28,7 +28,7 @@ water_folder = os.path.join(project_folder, 'Data_Output/predicted_rasters/round
 composite_folder = os.path.join(project_folder, 'Data_Input/imagery/composite/processed')
 vegetation_folder = os.path.join(project_folder, 'Data_Input/vegetation/foliar_cover')
 infrastructure_folder = os.path.join(project_folder, 'Data_Input/infrastructure')
-zonal_folder = os.path.join(project_folder, 'Data_Input/zonal')
+zonal_folder = os.path.join(project_folder, 'Data_Input/zonal_revised')
 
 # Define work geodatabase
 work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')

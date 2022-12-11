@@ -7,7 +7,7 @@
 # ---------------------------------------------------------------------------
 
 # Define version
-round_date = 'round_20221125'
+round_date = 'round_20221209'
 
 # Set root directory
 drive = 'N:'
@@ -40,32 +40,39 @@ raw_data = read.csv(raw_file)
 
 # Change column and row labels
 confusion_matrix = raw_data %>%
-  rename(barren = X1, dunes = X2, non_patterned = X3, wet_center = X4,
-         wet_trough = X5, salt_killed = X6, tidal_marsh = X7, water = X8) %>%
+  rename(barren = X1, dunes = X2, nonpatterned_drained = X3, nonpatterned_floodplain = X4,
+         nonpatterned_mesic = X5, permafrost_troughs = X6, poly_mesic = X7, poly_wet = X8,
+         freshwater_marsh = X9, stream_corridor = X10, tidal_marsh = X11, salt_killed = X12,
+         water = X13) %>%
   mutate(Actual = case_when(Actual == 1 ~ 'barren',
                             Actual == 2 ~ 'dunes',
-                            Actual == 3 ~ 'non_patterned',
-                            Actual == 4 ~ 'wet_center',
-                            Actual == 5 ~ 'wet_trough',
-                            Actual == 6 ~ 'salt_killed',
-                            Actual == 7 ~ 'tidal_marsh',
-                            Actual == 8 ~ 'water',
+                            Actual == 3 ~ 'nonpatterned_drained',
+                            Actual == 4 ~ 'nonpatterned_floodplain',
+                            Actual == 5 ~ 'nonpatterned_mesic',
+                            Actual == 6 ~ 'permafrost_troughs',
+                            Actual == 7 ~ 'poly_mesic',
+                            Actual == 8 ~ 'poly_wet',
+                            Actual == 9 ~ 'freshwater_marsh',
+                            Actual == 10 ~ 'stream_corridor',
+                            Actual == 11 ~ 'tidal_marsh',
+                            Actual == 12 ~ 'salt_killed',
+                            Actual == 13 ~ 'water',
                             TRUE ~ Actual)) %>%
   mutate(acc_producer = 0)
 
 # Calculate user accuracy
 count = 1
-while (count < 10) {
-  confusion_matrix[count, 11] = round(confusion_matrix[count, count + 1] / confusion_matrix[count, 10],
+while (count < 15) {
+  confusion_matrix[count, 16] = round(confusion_matrix[count, count + 1] / confusion_matrix[count, 15],
                                       digits = 2)
   count = count + 1
 }
 
 # Calculate producers accuracy
-confusion_matrix[10, 1] = 'acc_user'
+confusion_matrix[15, 1] = 'acc_user'
 count = 2
-while (count < 11) {
-  confusion_matrix[10, count] = round(confusion_matrix[count - 1, count] / confusion_matrix[9, count],
+while (count < 16) {
+  confusion_matrix[15, count] = round(confusion_matrix[count - 1, count] / confusion_matrix[14, count],
                                       digits = 2)
   count = count + 1
 }

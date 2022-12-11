@@ -19,9 +19,9 @@ root_folder = 'ACCS_Work'
 
 # Define folder structure
 project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
-grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/aggregated')
+grid_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/gridded')
 maxar_folder = os.path.join(project_folder, 'Data_Input/imagery/maxar/processed')
-zonal_folder = os.path.join(project_folder, 'Data_Input/zonal')
+zonal_folder = os.path.join(project_folder, 'Data_Input/zonal_revised')
 
 # Define work geodatabase
 work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')

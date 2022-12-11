@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Extract covariates to points
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-03
+# Last Updated: 2022-12-10
 # Usage: Must be executed in R 4.0.0+.
 # Description: "Extract covariates to points" extracts data from rasters to points.
 # ---------------------------------------------------------------------------
@@ -17,7 +17,7 @@ project_folder = paste(drive,
                        'Projects/VegetationEcology/BLM_AIM/GMT-2/Data',
                        sep = '/')
 zonal_folder = paste(project_folder,
-                     'Data_Input/zonal',
+                     'Data_Input/zonal_revised',
                      sep = '/')
 grid_folder = paste(project_folder,
                     'Data_Input/validation',
@@ -33,7 +33,7 @@ output_folder = paste(training_folder,
 
 # Define segments geodatabase
 segments_geodatabase = paste(project_folder,
-                             'GMT2_Segments.gdb',
+                             'GMT2_Segments_Gridded.gdb',
                              sep = '/')
 
 # Define input datasets
@@ -121,6 +121,12 @@ for (grid in grid_list) {
                     top_wetness = Wetness,
                     hyd_river_position = River_Position,
                     hyd_stream_position = Stream_Position,
+                    hyd_streams = Streams,
+                    hyd_stream_dist = Stream_Distance,
+                    hyd_seasonal_water = GMT2_SeasonalWater_Percentage,
+                    hyd_estuary_dist = Estuary_Distance,
+                    inf_developed = Infrastructure_Developed,
+                    inf_pipeline = Infrastructure_Pipelines,
                     comp_01_blue = GMT2_Comp_01_Blue,
                     comp_01_blue_std = GMT2_Comp_01_Blue_STD,
                     comp_02_green = GMT2_Comp_02_Green,
@@ -135,6 +141,10 @@ for (grid in grid_list) {
                     comp_ndvi_std = GMT2_Comp_NDVI_STD,
                     comp_ndwi = GMT2_Comp_NDWI,
                     comp_ndwi_std = GMT2_Comp_NDWI_STD,
+                    maxar_ndvi_std = GMT2_Maxar_NDVI_STD,
+                    maxar_ndvi_rng = GMT2_Maxar_NDVI_RNG,
+                    maxar_ndwi_std = GMT2_Maxar_NDWI_STD,
+                    maxar_ndwi_rng = GMT2_Maxar_NDWI_RNG,
                     s1_vh = Sent1_vh,
                     s1_vv = Sent1_vv,
                     s2_06_02_blue = Sent2_06_2_blue,
@@ -214,12 +224,11 @@ for (grid in grid_list) {
                     foliar_sphagn = NorthAmericanBeringia_sphagn_A6,
                     foliar_vaculi = NorthAmericanBeringia_vaculi_A6,
                     foliar_vacvit = NorthAmericanBeringia_vacvit_A6,
-                    foliar_wetsed = NorthAmericanBeringia_wetsed_A6,
-                    hyd_seasonal_water = GMT2_SeasonalWater_Percentage)
+                    foliar_wetsed = NorthAmericanBeringia_wetsed_A6)
     point_ancillary = point_ancillary %>%
       dplyr::rename(cv_group = GMT2_ValidationGroups,
                     train_class = Training_Geomorphology) %>%
-      dplyr::select(-POINT_X, -POINT_Y)
+      dplyr::select(-POINT_X, -POINT_Y, -shape_m, -shape_m2)
     
     # Join ancillary data to covariate data
     point_extracted = point_zonal %>%

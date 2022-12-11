@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Train and test physiography classifier
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-03
+# Last Updated: 2022-12-09
 # Usage: Must be executed in an Anaconda Python 3.9+ distribution.
 # Description: "Train and test physiography classifier " trains a random forest model to predict physiographic types from a set of training points. This script runs the model train and test steps to output a trained classifier file and predicted data set.
 # ---------------------------------------------------------------------------
@@ -19,7 +19,7 @@ import datetime
 from package_Statistics import multiclass_train_test
 
 # Define round
-round_date = 'round_20221125'
+round_date = 'round_20221209'
 
 #### SET UP DIRECTORIES, FILES, AND FIELDS
 
@@ -49,10 +49,12 @@ class_variable = ['train_class']
 predictor_all = ['top_aspect', 'top_elevation', 'top_exposure', 'top_heat_load', 'top_position', 'top_radiation',
                  'top_roughness', 'top_slope', 'top_surface_area', 'top_surface_relief', 'top_wetness',
                  'hyd_seasonal_water', 'hyd_river_position', 'hyd_stream_position',
+                 'hyd_streams', 'hyd_stream_dist', 'hyd_estuary_dist',
                  'comp_01_blue', 'comp_02_green', 'comp_03_red', 'comp_04_nearir', 'comp_evi2', 'comp_ndvi', 'comp_ndwi',
                  'comp_01_blue_std', 'comp_02_green_std', 'comp_03_red_std', 'comp_04_nearir_std',
                  'comp_evi2_std', 'comp_ndvi_std', 'comp_ndwi_std',
-                 's1_vh', 's1_vv',
+                 'maxar_ndvi_std', 'maxar_ndvi_rng', 'maxar_ndwi_std', 'maxar_ndwi_rng',
+                 's1_vh', 's1_vv', 'shape_m', 'shape_m2',
                  's2_06_02_blue', 's2_06_03_green', 's2_06_04_red', 's2_06_05_rededge1', 's2_06_06_rededge2',
                  's2_06_07_rededge3', 's2_06_08_nearir', 's2_06_08a_rededge4', 's2_06_11_shortir1', 's2_06_12_shortir2',
                  's2_06_evi2', 's2_06_nbr', 's2_06_ndmi', 's2_06_ndsi', 's2_06_ndvi', 's2_06_ndwi',
@@ -77,7 +79,7 @@ rstate = 21
 #### CONDUCT MODEL TRAIN AND TEST ITERATIONS
 
 # Create a standardized parameter set for a random forest classifier
-classifier_params = {'n_estimators': 1000,
+classifier_params = {'n_estimators': 10,
                      'criterion': 'gini',
                      'max_depth': None,
                      'min_samples_split': 2,
@@ -99,7 +101,7 @@ for file in input_files:
     print(f'Reading input data {count} of {input_length}...')
     data = pd.read_csv(file)
     input_data = pd.concat([input_data, data], axis=0)
-    input_data = input_data.dropna(axis=0, how='any')
+    input_data = input_data.fillna(0)
     input_data = input_data.loc[input_data[class_variable[0]] > 0].copy()
     count += 1
 print(f'Input data contains {len(input_data)} rows.')
