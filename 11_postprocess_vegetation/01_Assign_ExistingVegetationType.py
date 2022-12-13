@@ -36,6 +36,8 @@ evt_dictionary = {'coastal and estuarine barren': 1,
                   'salt-killed tundra or marsh': 3,
                   'stream corridor': 4,
                   'water': 5,
+                  'infrastructure': 6,
+                  'pipelines': 7,
                   'Arctic freshwater marsh': 8,
                   'Arctic herbaceous & dwarf shrub coastal beach': 9,
                   'Arctic herbaceous & shrub coastal dune': 10,
@@ -173,7 +175,7 @@ def evt_key(geomorphology, hyd_estuary_dist, foliar_forb, foliar_graminoid, foli
         if hyd_estuary_dist <= 100:
             evt_class = 'coastal and estuarine barren'
         elif hyd_estuary_dist > 100:
-            evt_class = 'floodplain barren'
+            evt_class = 'freshwater floodplain barren'
     # Define water
     elif geomorphology == 13:
         if foliar_wetsed >= 30:

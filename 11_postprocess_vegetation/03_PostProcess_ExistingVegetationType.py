@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# Create existing vegetation type rasters
+# Post-process existing vegetation type
 # Author: Timm Nawrocki
 # Last Updated: 2022-12-12
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
-# Description: "Create existing vegetation type rasters" combines tiles into a vegetation type raster.
+# Description: "Post-process existing vegetation type" processes the predicted raster into the final deliverable.
 # ---------------------------------------------------------------------------
 
 # Import packages
 import os
 from package_GeospatialProcessing import arcpy_geoprocessing
-from package_GeospatialProcessing import predictions_to_raster
+from package_GeospatialProcessing import postprocess_predicted_raster
 
 # Set round date
 round_date = 'round_20221209'
+version_number = 'v0_1'
 
 # Set root directory
 drive = 'N:/'
@@ -21,19 +22,26 @@ root_folder = 'ACCS_Work'
 
 # Define folder structure
 project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
-segment_folder = os.path.join(project_folder, 'Data_Input/imagery/segments/gridded')
-prediction_folder = os.path.join(project_folder, 'Data_Output/predicted_tables', round_date, 'vegetation')
-grid_folder = os.path.join(project_folder, 'Data_Output/predicted_rasters', round_date, 'vegetation')
-output_folder = os.path.join(project_folder, 'Data_Output/output_rasters', round_date, 'vegetation')
 
 # Define geodatabases
+project_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
 work_geodatabase = os.path.join(project_folder, 'GMT2_Workspace.gdb')
 
 # Define input datasets
 study_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
+input_raster = os.path.join(project_folder, 'Data_Output/output_rasters',
+                            round_date, 'vegetation', 'GMT2_ExistingVegetationType.tif')
+infrastructure_feature = os.path.join(project_geodatabase, 'Infrastructure_Developed')
+infrastructure_raster = os.path.join(project_folder, 'Data_Input/infrastructure',
+                                     'Infrastructure_Developed.tif')
+segments_feature = os.path.join(project_geodatabase, 'GMT2_Segments_Revised_Polygon')
+pipeline_raster = os.path.join(project_folder, 'Data_Input/infrastructure',
+                               'Infrastructure_Pipelines.tif')
+stream_raster = os.path.join(project_folder, 'Data_Input/hydrography/processed/Streams.tif')
 
 # Define output raster
-output_raster = os.path.join(output_folder, 'GMT2_ExistingVegetationType.tif')
+output_raster = os.path.join(project_folder, 'Data_Output/data_package', version_number, 'vegetation_type',
+                             'GMT2_ExistingVegetationType.tif')
 
 # Define EVT dictionary
 evt_dictionary = {'coastal and estuarine barren': 1,
@@ -64,19 +72,19 @@ evt_dictionary = {'coastal and estuarine barren': 1,
                   }
 
 # Create key word arguments
-kwargs_attributes = {'segment_folder': segment_folder,
-                     'prediction_folder': prediction_folder,
-                     'grid_folder': grid_folder,
-                     'target_field': 'evt_value',
-                     'data_type': 'discrete',
-                     'attribute_dictionary': evt_dictionary,
-                     'conversion_factor': 'NA',
-                     'work_geodatabase': work_geodatabase,
-                     'input_array': [study_raster],
-                     'output_array': [output_raster]
-                     }
+kwargs_process = {'minimum_count': 505,
+                  'stream_value': 4,
+                  'water_value': 5,
+                  'pipeline_value': 6,
+                  'infrastructure_value': 7,
+                  'attribute_dictionary': evt_dictionary,
+                  'work_geodatabase': work_geodatabase,
+                  'input_array': [study_raster, input_raster, infrastructure_feature, infrastructure_raster,
+                                  segments_feature, pipeline_raster, stream_raster],
+                  'output_array': [output_raster]
+                  }
 
-# Convert predictions to EVT raster
-print(f'Converting predictions to EVT raster...')
-arcpy_geoprocessing(predictions_to_raster, **kwargs_attributes)
+# Post-process EVT raster
+print(f'Post-processing EVT raster...')
+arcpy_geoprocessing(postprocess_predicted_raster, **kwargs_process)
 print('----------')
