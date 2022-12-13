@@ -14,7 +14,7 @@ from package_GeospatialProcessing import arcpy_geoprocessing
 from package_GeospatialProcessing import predictions_to_raster
 
 # Set round date
-round_date = 'round_20221125'
+round_date = 'round_20221209'
 
 # Set root directory
 drive = 'N:/'
@@ -47,7 +47,7 @@ if os.path.exists(geomorphology_folder) == 0:
 geomorphology_dictionary = {'barren': 1,
                             'dunes': 2,
                             'non-patterned, drained': 3,
-                            'non_patterned, floodplain': 4,
+                            'non-patterned, floodplain': 4,
                             'non-patterned, mesic': 5,
                             'permafrost troughs': 6,
                             'polygonal, mesic center': 7,
@@ -87,9 +87,8 @@ class_list = ['class_01', 'class_02', 'class_03', 'class_04',
               'class_05', 'class_06', 'class_07', 'class_08',
               'class_09', 'class_10', 'class_11', 'class_12',
               'class_13']
-geomorphology_list = ['barren', 'dunes', 'nonpatterned_drained', 'nonpatterned_floodplain', 'nonpatterened_mesic'
-                                                                                            'permafrost_troughs',
-                      'poly_mesiccenter', 'poly_wetcenter', 'freshwater_marsh',
+geomorphology_list = ['barren', 'dunes', 'nonpatterned_drained', 'nonpatterned_floodplain', 'nonpatterened_mesic',
+                      'permafrost_troughs', 'poly_mesiccenter', 'poly_wetcenter', 'freshwater_marsh',
                       'stream_corridor', 'tidal_marsh', 'salt_killed', 'water']
 
 # Iterate through each class and export a continuous probability raster

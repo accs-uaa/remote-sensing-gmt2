@@ -28,7 +28,7 @@ training_folder = paste(project_folder,
 
 # Define output folders
 output_folder = paste(training_folder,
-                      'table',
+                      'table_revised',
                       sep = '/')
 
 # Define segments geodatabase

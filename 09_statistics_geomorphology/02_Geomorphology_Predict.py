@@ -34,7 +34,7 @@ root_folder = 'ACCS_Work'
 data_folder = os.path.join(drive,
                            root_folder,
                            'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
-input_folder = os.path.join(data_folder, 'Data_Input/training_data/table')
+input_folder = os.path.join(data_folder, 'Data_Input/training_data/table_revised')
 model_folder = os.path.join(data_folder, 'Data_Output/model_results', round_date, 'geomorphology')
 output_folder = os.path.join(data_folder, 'Data_Output/predicted_tables', round_date, 'geomorphology')
 
@@ -103,7 +103,7 @@ for file in input_files:
         segment_start = time.time()
         all_data = pd.read_csv(file)
         input_data = all_data[retain_variables + class_variable + predictor_all].copy()
-        input_data = input_data.dropna(axis=0, how='any')
+        input_data = input_data.fillna(0)
         print(f'\tInput dataset contains {len(input_data)} rows...')
         X_data = input_data[predictor_all].astype(float)
         # Prepare output_data
@@ -129,6 +129,7 @@ for file in input_files:
         # Export output data to csv
         print('\tExporting predictions to csv...')
         segment_start = time.time()
+        output_data = output_data.drop(['shape_m', 'shape_m2'], axis=1)
         output_data.to_csv(output_file, header=True, index=False, sep=',', encoding='utf-8')
         # Report success
         segment_end = time.time()

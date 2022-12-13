@@ -25,7 +25,7 @@ work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
 
 # Define input datasets
 study_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
-class_feature = os.path.join(work_geodatabase, 'Training_Geomorphology_v5')
+class_feature = os.path.join(work_geodatabase, 'Training_Geomorphology_v7')
 
 # Define output datasets
 class_raster = os.path.join(training_folder, 'Training_Geomorphology.tif')

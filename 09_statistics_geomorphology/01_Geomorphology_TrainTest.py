@@ -31,7 +31,7 @@ root_folder = 'ACCS_Work'
 data_folder = os.path.join(drive,
                            root_folder,
                            'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
-data_input = os.path.join(data_folder, 'Data_Input/training_data/table')
+data_input = os.path.join(data_folder, 'Data_Input/training_data/table_revised')
 data_output = os.path.join(data_folder, 'Data_Output/model_results', round_date, 'geomorphology')
 
 # Define input files
@@ -79,7 +79,7 @@ rstate = 21
 #### CONDUCT MODEL TRAIN AND TEST ITERATIONS
 
 # Create a standardized parameter set for a random forest classifier
-classifier_params = {'n_estimators': 10,
+classifier_params = {'n_estimators': 100,
                      'criterion': 'gini',
                      'max_depth': None,
                      'min_samples_split': 2,

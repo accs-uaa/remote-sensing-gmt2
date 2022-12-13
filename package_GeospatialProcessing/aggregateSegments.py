@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Aggregate segments
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-08
+# Last Updated: 2022-12-12
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Aggregate segments" is a function that aggregates segments based on thresholds of NDVI and NDWI.
 # ---------------------------------------------------------------------------
@@ -11,7 +11,8 @@
 def aggregate_segments(**kwargs):
     """
     Description: aggregates segments based on thresholds on NDVI and NDWI
-    Inputs: 'zone_field' -- a string value of the field to use from the zone raster to define zones
+    Inputs: 'threshold' -- a numeric threshold to add to NDVI and NDWI to merge segments
+            'zone_field' -- a string value of the field to use from the zone raster to define zones
             'work_geodatabase' -- a geodatabase to store temporary results
             'input_array' -- an array containing the zone raster, the ndvi raster raster, and the ndwi raster
             'output_array' -- an array containing the output segment polygon feature, point feature, and raster
@@ -29,6 +30,7 @@ def aggregate_segments(**kwargs):
     import time
 
     # Parse key word argument inputs
+    threshold = kwargs['threshold']
     zone_field = kwargs['zone_field']
     work_geodatabase = kwargs['work_geodatabase']
     zone_raster = kwargs['input_array'][0]
@@ -90,7 +92,7 @@ def aggregate_segments(**kwargs):
                                  'CURRENT_SLICE',
                                  '',
                                  '')
-    ndvi_threshold = Int((ndvi_zonal + 0.05) * 100)
+    ndvi_threshold = Int((ndvi_zonal + threshold) * 10)
     # End timing
     iteration_end = time.time()
     iteration_elapsed = int(iteration_end - iteration_start)
@@ -111,7 +113,7 @@ def aggregate_segments(**kwargs):
                                  'CURRENT_SLICE',
                                  '',
                                  '')
-    ndwi_threshold = Int((ndwi_zonal + 0.05) * 100)
+    ndwi_threshold = Int((ndwi_zonal + threshold) * 10)
     # End timing
     iteration_end = time.time()
     iteration_elapsed = int(iteration_end - iteration_start)

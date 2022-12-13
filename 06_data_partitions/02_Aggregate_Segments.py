@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Aggregate segments
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-06
+# Last Updated: 2022-12-12
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Aggregate segments" merges adjacent image segments that are within 0.05 threshold of NDVI and NDWI.
 # ---------------------------------------------------------------------------
@@ -24,7 +24,7 @@ grid_folder = os.path.join(imagery_folder, 'segments/gridded')
 aggregate_folder = os.path.join(imagery_folder, 'segments/aggregated')
 
 # Define geodatabases
-work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
+work_geodatabase = os.path.join(project_folder, 'GMT2_Workspace.gdb')
 segments_geodatabase = os.path.join(project_folder, 'GMT2_Segments_Aggregated.gdb')
 
 # Define input datasets
@@ -55,7 +55,8 @@ for grid in grid_list:
     # Create zonal summary if output raster does not already exist
     if arcpy.Exists(grid_output) == 0:
         # Create key word arguments
-        kwargs_aggregate = {'zone_field': 'VALUE',
+        kwargs_aggregate = {'threshold': 0.5,
+                            'zone_field': 'VALUE',
                             'work_geodatabase': work_geodatabase,
                             'input_array': [grid_input, ndvi_raster, ndwi_raster],
                             'output_array': [grid_polygon, grid_point, grid_output]
