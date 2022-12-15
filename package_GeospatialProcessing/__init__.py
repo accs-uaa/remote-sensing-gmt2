@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Initialization for Geospatial Processing Module
 # Author: Timm Nawrocki
-# Last Updated: 2022-01-14
+# Last Updated: 2022-12-14
 # Usage: Individual functions have varying requirements. All functions that use arcpy must be executed in an ArcGIS Pro Python 3.6+ distribution.
 # Description: This initialization file imports modules in the package so that the contents are accessible.
 # ---------------------------------------------------------------------------
@@ -17,8 +17,9 @@ from package_GeospatialProcessing.compositeSegmentationImagery import composite_
 from package_GeospatialProcessing.convertClassData import convert_class_data
 from package_GeospatialProcessing.convertToBinaryRaster import convert_to_binary_raster
 from package_GeospatialProcessing.convertValidationGrid import convert_validation_grid
+from package_GeospatialProcessing.correctNoData import correct_no_data
 from package_GeospatialProcessing.createGridIndex import create_grid_index
-from package_GeospatialProcessing.createSampleBlock import create_sample_block
+from package_GeospatialProcessing.createSamplingGrid import create_sampling_grid
 from package_GeospatialProcessing.distanceFromFeature import distance_from_feature
 from package_GeospatialProcessing.downloadFromCSV import download_from_csv
 from package_GeospatialProcessing.downloadFromDrive import download_from_drive
@@ -35,7 +36,6 @@ from package_GeospatialProcessing.parseRasterBand import parse_raster_band
 from package_GeospatialProcessing.postprocessPredictedRaster import postprocess_predicted_raster
 from package_GeospatialProcessing.postprocessSegments import postprocess_segments
 from package_GeospatialProcessing.predictionsToRaster import predictions_to_raster
-from package_GeospatialProcessing.probabilisticSiteSelection import probabilistic_site_selection
 from package_GeospatialProcessing.reprojectExtract import reproject_extract
 from package_GeospatialProcessing.spliceSegmentsFloodplains import splice_segments_floodplains
 from package_GeospatialProcessing.summarizeToRegions import summarize_to_regions
