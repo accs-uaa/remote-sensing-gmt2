@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Extract covariates to points
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-10
+# Last Updated: 2022-12-20
 # Usage: Must be executed in R 4.0.0+.
 # Description: "Extract covariates to points" extracts data from rasters to points.
 # ---------------------------------------------------------------------------
@@ -19,12 +19,6 @@ project_folder = paste(drive,
 zonal_folder = paste(project_folder,
                      'Data_Input/zonal_revised',
                      sep = '/')
-grid_folder = paste(project_folder,
-                    'Data_Input/validation',
-                    sep = '/')
-training_folder = paste(project_folder,
-                        'Data_Input/training_data',
-                        sep = '/')
 
 # Define output folders
 output_folder = paste(training_folder,
@@ -35,10 +29,6 @@ output_folder = paste(training_folder,
 segments_geodatabase = paste(project_folder,
                              'GMT2_Segments_Gridded.gdb',
                              sep = '/')
-
-# Define input datasets
-grid_raster = paste(grid_folder, 'GMT2_ValidationGroups.tif', sep = '/')
-training_raster = paste(training_folder, 'processed/Training_Geomorphology.tif', sep = '/')
 
 # Define grids
 grid_list = c('A4', 'A5', 'A6', 'A7',
@@ -53,13 +43,6 @@ library(dplyr)
 library(raster)
 library(sf)
 library(stringr)
-
-# Generate a stack of ancillary rasters
-print('Creating ancillary raster stack...')
-start = proc.time()
-ancillary_stack = stack(c(grid_raster, training_raster))
-end = proc.time() - start
-print(end[3])
 
 # Set count
 count = 1
@@ -96,13 +79,6 @@ for (grid in grid_list) {
     print(input_points)
     point_data = st_read(dsn = segments_geodatabase, layer = input_points)
     point_zonal = data.frame(point_data, raster::extract(predictor_stack, point_data))
-    end = proc.time() - start
-    print(end[3])
-    
-    # Extract ancillary data
-    print('Extracting ancillary data...')
-    start = proc.time()
-    point_ancillary = data.frame(point_data, raster::extract(ancillary_stack, point_data))
     end = proc.time() - start
     print(end[3])
     
@@ -225,17 +201,9 @@ for (grid in grid_list) {
                     foliar_vaculi = NorthAmericanBeringia_vaculi_A6,
                     foliar_vacvit = NorthAmericanBeringia_vacvit_A6,
                     foliar_wetsed = NorthAmericanBeringia_wetsed_A6)
-    point_ancillary = point_ancillary %>%
-      dplyr::rename(cv_group = GMT2_ValidationGroups,
-                    train_class = Training_Geomorphology) %>%
-      dplyr::select(-POINT_X, -POINT_Y, -shape_m, -shape_m2)
-    
-    # Join ancillary data to covariate data
-    point_extracted = point_zonal %>%
-      left_join(point_ancillary, by = 'segment_id')
     
     # Export data as a csv
-    st_write(point_extracted, output_file, coords = FALSE)
+    st_write(point_zonal, output_file, coords = FALSE)
     print(paste('Extraction iteration ', toString(count), ' out of ', toString(grid_length), ' completed.', sep=''))
     print('----------')
   } else {

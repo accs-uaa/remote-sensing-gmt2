@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# Predict geomorphology types to points
+# Predict surficial features to points
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-09
+# Last Updated: 2022-12-20
 # Usage: Must be executed in an Anaconda Python 3.9+ distribution.
-# Description: "Predict geomorphology types to points" predicts a random forest model to a set of grid csv files containing extracted covariate values to produce a set of output predictions with mean and standard deviation. The script must be run on a machine that can support 4 cores.
+# Description: "Predict surficial features to points" predicts a random forest model to a set of grid csv files containing extracted covariate values to produce a set of output predictions. The script must be run on a machine that can support 4 cores.
 # ---------------------------------------------------------------------------
 
 # Import packages
-import glob
 import joblib
 import os
 import pandas as pd
@@ -19,10 +18,10 @@ import datetime
 from package_Statistics import multiclass_predict
 
 # Define round
-round_date = 'round_20221209'
+round_date = 'round_20221219'
 
 # Define number of predicted classes
-class_number = 13
+class_number = 15
 
 #### SET UP DIRECTORIES, FILES, AND FIELDS
 
@@ -34,13 +33,12 @@ root_folder = 'ACCS_Work'
 data_folder = os.path.join(drive,
                            root_folder,
                            'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
-input_folder = os.path.join(data_folder, 'Data_Input/training_data/table_revised')
-model_folder = os.path.join(data_folder, 'Data_Output/model_results', round_date, 'geomorphology')
-output_folder = os.path.join(data_folder, 'Data_Output/predicted_tables', round_date, 'geomorphology')
+covariate_folder = os.path.join(data_folder, 'Data_Input/training_data/table_revised')
+response_folder = os.path.join(data_folder, 'Data_Input/training_data/table_training')
+model_folder = os.path.join(data_folder, 'Data_Output/model_results', round_date, 'surficial_features')
+output_folder = os.path.join(data_folder, 'Data_Output/predicted_tables', round_date, 'surficial_features')
 
 # Define input files
-os.chdir(input_folder)
-input_files = glob.glob('*.csv')
 classifier_path = os.path.join(model_folder, 'classifier.joblib')
 
 # Define variable sets
@@ -49,7 +47,8 @@ predictor_all = ['top_aspect', 'top_elevation', 'top_exposure', 'top_heat_load',
                  'top_roughness', 'top_slope', 'top_surface_area', 'top_surface_relief', 'top_wetness',
                  'hyd_seasonal_water', 'hyd_river_position', 'hyd_stream_position',
                  'hyd_streams', 'hyd_stream_dist', 'hyd_estuary_dist',
-                 'comp_01_blue', 'comp_02_green', 'comp_03_red', 'comp_04_nearir', 'comp_evi2', 'comp_ndvi', 'comp_ndwi',
+                 'comp_01_blue', 'comp_02_green', 'comp_03_red', 'comp_04_nearir', 'comp_evi2', 'comp_ndvi',
+                 'comp_ndwi',
                  'comp_01_blue_std', 'comp_02_green_std', 'comp_03_red_std', 'comp_04_nearir_std',
                  'comp_evi2_std', 'comp_ndvi_std', 'comp_ndwi_std',
                  'maxar_ndvi_std', 'maxar_ndvi_rng', 'maxar_ndwi_std', 'maxar_ndwi_rng',
@@ -69,8 +68,9 @@ predictor_all = ['top_aspect', 'top_elevation', 'top_exposure', 'top_heat_load',
 retain_variables = ['segment_id', 'POINT_X', 'POINT_Y',
                     'foliar_alnus', 'foliar_betshr', 'foliar_dryas', 'foliar_empnig', 'foliar_erivag', 'foliar_forb',
                     'foliar_graminoid', 'foliar_lichen', 'foliar_rhoshr', 'foliar_salshr', 'foliar_sphagn',
-                    'foliar_vaculi', 'foliar_vacvit', 'foliar_wetsed']
-prediction = ['geomorphology']
+                    'foliar_vaculi', 'foliar_vacvit', 'foliar_wetsed',
+                    'inf_developed', 'inf_pipeline']
+prediction = ['surface']
 output_columns = retain_variables + predictor_all
 
 # Define random state
@@ -84,15 +84,23 @@ classifier = joblib.load(classifier_path)
 segment_end = time.time()
 segment_elapsed = int(segment_end - segment_start)
 segment_success_time = datetime.datetime.now()
-print(f'Completed at {segment_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=segment_elapsed)})')
+print(
+    f'Completed at {segment_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=segment_elapsed)})')
 print('----------')
+
+# Define grids
+grid_list = ['A4', 'A5', 'A6', 'A7',
+             'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7',
+             'C1', 'C2', 'C3', 'C4', 'C5', 'C6',
+             'D1', 'D2', 'D3', 'D4', 'D5',
+             'E1', 'E2', 'E3', 'E4', 'E5']
 
 # Predict each input dataset
 count = 1
-input_length = len(input_files)
-for file in input_files:
+input_length = len(grid_list)
+for grid in grid_list:
     # Define output file
-    output_file = os.path.join(output_folder, os.path.split(file)[1])
+    output_file = os.path.join(output_folder, grid + '.csv')
 
     # Predict input dataset if output does not already exist
     if os.path.exists(output_file) == 0:
@@ -101,8 +109,13 @@ for file in input_files:
         # Load input data
         print('\tLoading input data')
         segment_start = time.time()
-        all_data = pd.read_csv(file)
-        input_data = all_data[retain_variables + class_variable + predictor_all].copy()
+        covariate_file = os.path.join(covariate_folder, grid + '.csv')
+        response_file = os.path.join(response_folder, grid + '.csv')
+        covariate_data = pd.read_csv(covariate_file)
+        response_data = pd.read_csv(response_file)
+        covariate_data = covariate_data.drop(['cv_group', 'train_class'], axis=1)
+        join_data = response_data.join(covariate_data.set_index('segment_id'), on='segment_id')
+        input_data = join_data[retain_variables + class_variable + predictor_all].copy()
         input_data = input_data.fillna(0)
         print(f'\tInput dataset contains {len(input_data)} rows...')
         X_data = input_data[predictor_all].astype(float)
@@ -112,7 +125,8 @@ for file in input_files:
         segment_end = time.time()
         segment_elapsed = int(segment_end - segment_start)
         segment_success_time = datetime.datetime.now()
-        print(f'\tCompleted at {segment_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=segment_elapsed)})')
+        print(
+            f'\tCompleted at {segment_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=segment_elapsed)})')
         print('\t----------')
 
         # Predict data
@@ -123,7 +137,8 @@ for file in input_files:
         segment_end = time.time()
         segment_elapsed = int(segment_end - segment_start)
         segment_success_time = datetime.datetime.now()
-        print(f'\tCompleted at {segment_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=segment_elapsed)})')
+        print(
+            f'\tCompleted at {segment_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=segment_elapsed)})')
         print('\t----------')
 
         # Export output data to csv
@@ -135,7 +150,8 @@ for file in input_files:
         segment_end = time.time()
         segment_elapsed = int(segment_end - segment_start)
         segment_success_time = datetime.datetime.now()
-        print(f'\tCompleted at {segment_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=segment_elapsed)})')
+        print(
+            f'\tCompleted at {segment_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=segment_elapsed)})')
         print('\t----------')
 
     else:

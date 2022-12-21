@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Create training raster
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-08
+# Last Updated: 2022-12-15
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Create training raster" creates a raster of training data values from a set of manually delineated polygons representing different types for a classification.
 # ---------------------------------------------------------------------------
@@ -25,10 +25,10 @@ work_geodatabase = os.path.join(project_folder, 'GMT2_RemoteSensing.gdb')
 
 # Define input datasets
 study_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
-class_feature = os.path.join(work_geodatabase, 'Training_Geomorphology_v7')
+class_feature = os.path.join(work_geodatabase, 'Training_SurficialFeatures_v10')
 
 # Define output datasets
-class_raster = os.path.join(training_folder, 'Training_Geomorphology.tif')
+class_raster = os.path.join(training_folder, 'Training_SurficialFeatures.tif')
 
 # Define fields
 class_field = 'surface'
@@ -39,14 +39,16 @@ class_values = {'barren': 1,
                 'non-patterned, drained': 3,
                 'non-patterned, floodplain': 4,
                 'non-patterned, mesic': 5,
-                'permafrost troughs': 6,
-                'polygonal, mesic center': 7,
-                'polygonal, wet center': 8,
-                'freshwater marsh': 9,
-                'stream corridor': 10,
-                'tidal marsh': 11,
-                'salt-killed': 12,
-                'water': 13}
+                'non-polygonal, wet': 6,
+                'permafrost troughs': 7,
+                'polygonal, mesic center': 8,
+                'polygonal, wet center': 9,
+                'freshwater marsh': 10,
+                'stream corridor': 11,
+                'tidal marsh': 12,
+                'salt-killed': 13,
+                'vegetated coastal beach': 14,
+                'water': 15}
 
 #### CREATE TRAINING RASTER
 

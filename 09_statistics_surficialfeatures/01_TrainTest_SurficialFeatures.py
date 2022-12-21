@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# Train and test physiography classifier
+# Train and test surficial feature classifier
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-09
+# Last Updated: 2022-12-20
 # Usage: Must be executed in an Anaconda Python 3.9+ distribution.
-# Description: "Train and test physiography classifier " trains a random forest model to predict physiographic types from a set of training points. This script runs the model train and test steps to output a trained classifier file and predicted data set.
+# Description: "Train and test surficial feature classifier " trains a random forest model to predict surficial features from a set of training points. This script runs the model train and test steps to output a trained classifier file and predicted data set. The script must be run on a machine that can support 4 cores.
 # ---------------------------------------------------------------------------
 
 # Import packages
-import glob
 import os
 import pandas as pd
 from sklearn.model_selection import LeaveOneGroupOut
@@ -19,7 +18,7 @@ import datetime
 from package_Statistics import multiclass_train_test
 
 # Define round
-round_date = 'round_20221209'
+round_date = 'round_20221219'
 
 #### SET UP DIRECTORIES, FILES, AND FIELDS
 
@@ -31,18 +30,15 @@ root_folder = 'ACCS_Work'
 data_folder = os.path.join(drive,
                            root_folder,
                            'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
-data_input = os.path.join(data_folder, 'Data_Input/training_data/table_revised')
-data_output = os.path.join(data_folder, 'Data_Output/model_results', round_date, 'geomorphology')
-
-# Define input files
-os.chdir(data_input)
-input_files = glob.glob('*.csv')
+covariate_folder = os.path.join(data_folder, 'Data_Input/training_data/table_revised')
+response_folder = os.path.join(data_folder, 'Data_Input/training_data/table_training')
+output_folder = os.path.join(data_folder, 'Data_Output/model_results', round_date, 'surficial_features')
 
 # Define output data
-output_csv = os.path.join(data_output, 'prediction.csv')
-output_classifier = os.path.join(data_output, 'classifier.joblib')
-importance_mdi_csv = os.path.join(data_output, 'importance_classifier_mdi.csv')
-confusion_csv = os.path.join(data_output, 'confusion_matrix_raw.csv')
+output_csv = os.path.join(output_folder, 'prediction.csv')
+output_classifier = os.path.join(output_folder, 'classifier.joblib')
+importance_mdi_csv = os.path.join(output_folder, 'importance_classifier_mdi.csv')
+confusion_csv = os.path.join(output_folder, 'confusion_matrix_raw.csv')
 
 # Define variable sets
 class_variable = ['train_class']
@@ -79,7 +75,7 @@ rstate = 21
 #### CONDUCT MODEL TRAIN AND TEST ITERATIONS
 
 # Create a standardized parameter set for a random forest classifier
-classifier_params = {'n_estimators': 100,
+classifier_params = {'n_estimators': 10,
                      'criterion': 'gini',
                      'max_depth': None,
                      'min_samples_split': 2,
@@ -93,14 +89,26 @@ classifier_params = {'n_estimators': 100,
                      'n_jobs': 4,
                      'random_state': rstate}
 
+# Define grids
+grid_list = ['A4', 'A5', 'A6', 'A7',
+             'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7',
+             'C1', 'C2', 'C3', 'C4', 'C5', 'C6',
+             'D1', 'D2', 'D3', 'D4', 'D5',
+             'E1', 'E2', 'E3', 'E4', 'E5']
+
 # Create data frame of input data
-input_length = len(input_files)
+input_length = len(grid_list)
 input_data = pd.DataFrame(columns=retain_variables + class_variable + cv_groups + predictor_all)
 count = 1
-for file in input_files:
+for grid in grid_list:
     print(f'Reading input data {count} of {input_length}...')
-    data = pd.read_csv(file)
-    input_data = pd.concat([input_data, data], axis=0)
+    covariate_file = os.path.join(covariate_folder, grid + '.csv')
+    response_file = os.path.join(response_folder, grid + '.csv')
+    covariate_data = pd.read_csv(covariate_file)
+    response_data = pd.read_csv(response_file)
+    covariate_data = covariate_data.drop(['cv_group', 'train_class'], axis=1)
+    join_data = response_data.join(covariate_data.set_index('segment_id'), on='segment_id')
+    input_data = pd.concat([input_data, join_data], axis=0)
     input_data = input_data.fillna(0)
     input_data = input_data.loc[input_data[class_variable[0]] > 0].copy()
     count += 1
@@ -132,6 +140,23 @@ print('----------')
 
 #### STORE RESULTS
 
+# Calculate and store confusion matrix
+print('Saving confusion matrix to csv file...')
+iteration_start = time.time()
+# Assign true and predicted values
+true_data = outer_results[class_variable[0]]
+pred_data = outer_results[prediction[0]]
+# Create confusion matrix
+confusion_data = pd.crosstab(true_data, pred_data, rownames=['Actual'], colnames=['Predicted'], margins=True)
+# Export confusion matrix
+confusion_data.to_csv(confusion_csv, header=True, index=True, sep=',', encoding='utf-8')
+iteration_end = time.time()
+iteration_elapsed = int(iteration_end - iteration_start)
+iteration_success_time = datetime.datetime.now()
+print(
+    f'Completed at {iteration_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=iteration_elapsed)})')
+print('----------')
+
 # Store output results in csv file
 print('Saving combined results to csv file...')
 iteration_start = time.time()
@@ -147,23 +172,6 @@ print('----------')
 print('Saving variable importances to csv file...')
 iteration_start = time.time()
 importance_table.to_csv(importance_mdi_csv, header=True, index=False, sep=',', encoding='utf-8')
-iteration_end = time.time()
-iteration_elapsed = int(iteration_end - iteration_start)
-iteration_success_time = datetime.datetime.now()
-print(
-    f'Completed at {iteration_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=iteration_elapsed)})')
-print('----------')
-
-# Calculate and store confusion matrix
-print('Saving confusion matrix to csv file...')
-iteration_start = time.time()
-# Assign true and predicted values
-true_data = outer_results[class_variable[0]]
-pred_data = outer_results[prediction[0]]
-# Create confusion matrix
-confusion_data = pd.crosstab(true_data, pred_data, rownames=['Actual'], colnames=['Predicted'], margins=True)
-# Export confusion matrix
-confusion_data.to_csv(confusion_csv, header=True, index=True, sep=',', encoding='utf-8')
 iteration_end = time.time()
 iteration_elapsed = int(iteration_end - iteration_start)
 iteration_success_time = datetime.datetime.now()

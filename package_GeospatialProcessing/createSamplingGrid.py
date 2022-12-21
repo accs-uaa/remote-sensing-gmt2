@@ -64,7 +64,7 @@ def create_sampling_grid(**kwargs):
     arcpy.conversion.RasterToPoint(extract_raster,
                                    output_points,
                                    'VALUE')
-    arcpy.management.DeleteField(output_points, ['pointid', 'grid_code'], 'DELETE_FIELDS')
+    arcpy.management.DeleteField(output_points, ['grid_code'], 'DELETE_FIELDS')
     arcpy.management.AddXY(output_points)
     # Convert to raster
     arcpy.conversion.PointToRaster(output_points,
