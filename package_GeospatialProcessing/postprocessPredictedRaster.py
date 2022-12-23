@@ -69,6 +69,7 @@ def postprocess_predicted_raster(**kwargs):
     infrastructure_buffer_raster = os.path.join(infrastructure_folder, 'infrastructure_developed_raster.tif')
     infrastructure_zonal = os.path.join(infrastructure_folder, 'zonal_developed.tif')
     pipeline_zonal = os.path.join(infrastructure_folder, 'zonal_pipelines.tif')
+    input_integer = os.path.join(work_folder, 'integer.tif')
 
     # Set overwrite option
     arcpy.env.overwriteOutput = True
@@ -185,11 +186,31 @@ def postprocess_predicted_raster(**kwargs):
     # Generalize raster results
     print(f'\tGeneralizing predicted raster...')
     iteration_start = time.time()
+    # Copy raster to integer
+    print('\t\tConverting input raster to integers...')
+    arcpy.management.CopyRaster(input_raster,
+                                input_integer,
+                                '',
+                                '',
+                                '-128',
+                                'NONE',
+                                'NONE',
+                                '8_BIT_SIGNED',
+                                'NONE',
+                                'NONE',
+                                'TIFF',
+                                'NONE',
+                                'CURRENT_SLICE',
+                                'NO_TRANSPOSE')
+    arcpy.management.CalculateStatistics(input_integer)
+    arcpy.management.BuildRasterAttributeTable(input_integer, 'Overwrite')
     # Clean raster boundaries
-    raster_boundary = BoundaryClean(Raster(input_raster),
+    print('\t\tCleaning raster boundaries...')
+    raster_boundary = BoundaryClean(input_integer,
                                     'DESCEND',
                                     'TWO_WAY')
     # Apply majority filter
+    print('\t\tSmoothing raster edges...')
     raster_majority = MajorityFilter(raster_boundary,
                                      'EIGHT',
                                      'MAJORITY')
@@ -206,10 +227,17 @@ def postprocess_predicted_raster(**kwargs):
     print(f'\tCalculating regions...')
     iteration_start = time.time()
     # Set null where infrastructure has contaminated predictions
-    raster_remove_1 = SetNull(Raster(infrastructure_zonal) > 0, raster_majority)
+    print('\t\tRemoving infrastructure errors...')
+    raster_remove_1 = SetNull((Raster(infrastructure_zonal) > 0)
+                              & ((raster_majority == 1) | (raster_majority == 2) | (raster_majority == 3)),
+                              raster_majority)
     # Set null where pipelines have contaminated predictions
-    raster_remove_2 = SetNull(Raster(pipeline_zonal) > 0, raster_remove_1)
+    print('\t\tRemoving pipeline errors...')
+    raster_remove_2 = SetNull((Raster(pipeline_zonal) > 0)
+                              & ((raster_majority == 1) | (raster_majority == 2) | (raster_majority == 3)),
+                              raster_remove_1)
     # Calculate regions
+    print('\t\tCalculating contiguous value areas...')
     raster_regions = RegionGroup(raster_remove_2,
                                  'FOUR',
                                  'WITHIN',
@@ -228,6 +256,7 @@ def postprocess_predicted_raster(**kwargs):
     print(f'\tCreating mask raster of removed zones...')
     iteration_start = time.time()
     # Remove zones below minimum mapping unit
+    print('\t\tRemoving contiguous areas below minimum mapping unit...')
     criteria = f'COUNT > {minimum_count}'
     raster_mask_1 = ExtractByAttributes(raster_regions,
                                         criteria)
@@ -287,7 +316,7 @@ def postprocess_predicted_raster(**kwargs):
                                 output_raster,
                                 '',
                                 '',
-                                '-127',
+                                '-128',
                                 'NONE',
                                 'NONE',
                                 '8_BIT_SIGNED',
@@ -318,6 +347,10 @@ def postprocess_predicted_raster(**kwargs):
     print(
         f'\tCompleted at {iteration_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=iteration_elapsed)})')
     print('\t----------')
+
+    # Delete intermediate datasets
+    if arcpy.Exists(input_integer) == 1:
+        arcpy.management.Delete(input_integer)
 
     # Return success message
     out_process = f'Successfully post-processed predicted raster.'

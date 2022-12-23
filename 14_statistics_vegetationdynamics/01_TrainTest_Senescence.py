@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Train and test regressor for phenology senescence
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-15
+# Last Updated: 2022-12-23
 # Usage: Must be executed in an Anaconda Python 3.9+ distribution.
 # Description: "Train and test regressor for phenology senescence" trains a Random Forest model to predict senescence day of year from a set of training samples. This script runs the model train and test steps to output a trained regressor file and predicted data set.
 # ---------------------------------------------------------------------------
@@ -21,7 +21,7 @@ from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import LeaveOneGroupOut
 
 # Define round
-round_date = 'round_20221209'
+round_date = 'round_20221219'
 
 # Define target group
 lower_threshold = 199
@@ -52,11 +52,11 @@ predictor_all = ['foliar_forb', 'foliar_graminoid', 'foliar_lichen',
                  'foliar_alnus', 'foliar_betshr', 'foliar_dryas', 'foliar_empnig',
                  'foliar_erivag', 'foliar_rhoshr', 'foliar_salshr', 'foliar_sphagn',
                  'foliar_vaculi', 'foliar_vacvit', 'foliar_wetsed',
-                 'prob_barren', 'prob_dunes', 'prob_freshmarsh', 'prob_nonpatternedmesic',
-                 'prob_nonpatterneddrained', 'prob_floodplain', 'prob_troughs',
-                 'prob_polymesic', 'prob_polywet', 'prob_saltkilled', 'prob_streamcorridor',
-                 'prob_tidalmarsh', 'prob_water',
-                 'hyd_estuary_dist', 'hyd_seasonal_water',
+                 'prob_barren', 'prob_dunes', 'prob_nonpatterneddrained',
+                 'prob_floodplain', 'prob_nonpatternedmesic', 'prob_nonpolywet',
+                 'prob_troughs', 'prob_polymesic', 'prob_polywet', 'prob_freshmarsh',
+                 'prob_streamcorridor', 'prob_tidalmarsh', 'prob_saltkilled', 'prob_coastalbeach',
+                 'prob_water', 'hyd_estuary_dist', 'hyd_seasonal_water',
                  'inf_developed', 'inf_pipeline',
                  'year']
 predict_variable = ['pred_senescence']

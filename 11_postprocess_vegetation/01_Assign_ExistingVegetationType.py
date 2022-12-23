@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Assign existing vegetation type
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-12
+# Last Updated: 2022-12-23
 # Usage: Must be executed in an Anaconda Python 3.9+ distribution.
 # Description: "Assign existing vegetation type" assigns a vegetation type label from surficial features and foliar cover.
 # ---------------------------------------------------------------------------
@@ -23,12 +23,39 @@ root_folder = 'ACCS_Work'
 data_folder = os.path.join(drive,
                            root_folder,
                            'Projects/VegetationEcology/BLM_AIM/GMT-2/Data/Data_Output')
-input_folder = os.path.join(data_folder, 'predicted_tables', round_date, 'geomorphology')
+input_folder = os.path.join(data_folder, 'predicted_tables', round_date, 'surface')
 output_folder = os.path.join(data_folder, 'predicted_tables', round_date, 'vegetation')
 
 # Define input files
 os.chdir(input_folder)
 input_files = glob.glob('*.csv')
+
+predictor_all = ['top_aspect', 'top_elevation', 'top_exposure', 'top_heat_load', 'top_position', 'top_radiation',
+                 'top_roughness', 'top_slope', 'top_surface_area', 'top_surface_relief', 'top_wetness',
+                 'hyd_seasonal_water', 'hyd_river_position', 'hyd_stream_position',
+                 'hyd_streams', 'hyd_stream_dist', 'hyd_estuary_dist',
+                 'comp_01_blue', 'comp_02_green', 'comp_03_red', 'comp_04_nearir', 'comp_evi2', 'comp_ndvi',
+                 'comp_ndwi',
+                 'comp_01_blue_std', 'comp_02_green_std', 'comp_03_red_std', 'comp_04_nearir_std',
+                 'comp_evi2_std', 'comp_ndvi_std', 'comp_ndwi_std',
+                 'maxar_ndvi_std', 'maxar_ndvi_rng', 'maxar_ndwi_std', 'maxar_ndwi_rng',
+                 's1_vh', 's1_vv', 'shape_m', 'shape_m2',
+                 's2_06_02_blue', 's2_06_03_green', 's2_06_04_red', 's2_06_05_rededge1', 's2_06_06_rededge2',
+                 's2_06_07_rededge3', 's2_06_08_nearir', 's2_06_08a_rededge4', 's2_06_11_shortir1', 's2_06_12_shortir2',
+                 's2_06_evi2', 's2_06_nbr', 's2_06_ndmi', 's2_06_ndsi', 's2_06_ndvi', 's2_06_ndwi',
+                 's2_07_02_blue', 's2_07_03_green', 's2_07_04_red', 's2_07_05_rededge1', 's2_07_06_rededge2',
+                 's2_07_07_rededge3', 's2_07_08_nearir', 's2_07_08a_rededge4', 's2_07_11_shortir1', 's2_07_12_shortir2',
+                 's2_07_evi2', 's2_07_nbr', 's2_07_ndmi', 's2_07_ndsi', 's2_07_ndvi', 's2_07_ndwi',
+                 's2_08_02_blue', 's2_08_03_green', 's2_08_04_red', 's2_08_05_rededge1', 's2_08_06_rededge2',
+                 's2_08_07_rededge3', 's2_08_08_nearir', 's2_08_08a_rededge4', 's2_08_11_shortir1', 's2_08_12_shortir2',
+                 's2_08_evi2', 's2_08_nbr', 's2_08_ndmi', 's2_08_ndsi', 's2_08_ndvi', 's2_08_ndwi',
+                 's2_09_02_blue', 's2_09_03_green', 's2_09_04_red', 's2_09_05_rededge1', 's2_09_06_rededge2',
+                 's2_09_07_rededge3', 's2_09_08_nearir', 's2_09_08a_rededge4', 's2_09_11_shortir1', 's2_09_12_shortir2',
+                 's2_09_evi2', 's2_09_nbr', 's2_09_ndmi', 's2_09_ndsi', 's2_09_ndvi', 's2_09_ndwi',
+                 'foliar_alnus', 'foliar_betshr', 'foliar_dryas', 'foliar_empnig', 'foliar_erivag', 'foliar_forb',
+                 'foliar_graminoid', 'foliar_lichen', 'foliar_rhoshr', 'foliar_salshr', 'foliar_sphagn',
+                 'foliar_vaculi', 'foliar_vacvit', 'foliar_wetsed',
+                 'inf_developed', 'inf_pipeline']
 
 # Define EVT dictionary
 evt_dictionary = {'coastal and estuarine barren': 1,
@@ -58,8 +85,9 @@ evt_dictionary = {'coastal and estuarine barren': 1,
                   'unclassified floodplain': 25
                   }
 
+
 # Define EVT Key
-def evt_key(geomorphology, hyd_estuary_dist, foliar_forb, foliar_graminoid, foliar_lichen,
+def evt_key(surface, hyd_estuary_dist,
             foliar_alnus, foliar_betshr, foliar_dryas, foliar_empnig, foliar_erivag,
             foliar_rhoshr, foliar_salshr, foliar_sphagn, foliar_vaculi, foliar_vacvit,
             foliar_wetsed):
@@ -75,7 +103,7 @@ def evt_key(geomorphology, hyd_estuary_dist, foliar_forb, foliar_graminoid, foli
     evt_class = 'unclassified'
 
     #### DEFINE DRAINED TYPES
-    if geomorphology == 3:
+    if surface == 3:
         if foliar_dryeri >= 5:
             evt_class = 'Arctic Dryas-ericaceous dwarf shrub, acidic'
         # Define tussock tundra where not dwarf shrub
@@ -85,7 +113,7 @@ def evt_key(geomorphology, hyd_estuary_dist, foliar_forb, foliar_graminoid, foli
             else:
                 evt_class = 'Arctic tussock dwarf shrub tundra'
     #### DEFINE DUNE TYPES
-    elif geomorphology == 2:
+    elif surface == 2:
         if hyd_estuary_dist <= 100:
             evt_class = 'Arctic herbaceous & shrub coastal dune'
         elif hyd_estuary_dist > 100 and foliar_salshr >= 5:
@@ -93,7 +121,7 @@ def evt_key(geomorphology, hyd_estuary_dist, foliar_forb, foliar_graminoid, foli
         else:
             evt_class = 'Arctic herbaceous inland dune'
     #### DEFINE MESIC TYPES
-    elif geomorphology in (5, 6, 7):
+    elif surface in (5, 7, 8):
         # Define tussock tundra
         if foliar_erivag >= 8:
             if foliar_lowshrub >= 15:
@@ -119,9 +147,9 @@ def evt_key(geomorphology, hyd_estuary_dist, foliar_forb, foliar_graminoid, foli
                 evt_class = 'Arctic Dryas-ericaceous dwarf shrub, acidic'
         # Define herbaceous types
         elif foliar_wetsed >= 10:
-                evt_class = 'Arctic sedge meadow, wet'
+            evt_class = 'Arctic sedge meadow, wet'
     #### DEFINE WET TYPES
-    elif geomorphology in (8, 9):
+    elif surface in (6, 9):
         # Define tussock tundra
         if foliar_erivag >= 30:
             if foliar_lowshrub >= 15:
@@ -130,7 +158,7 @@ def evt_key(geomorphology, hyd_estuary_dist, foliar_forb, foliar_graminoid, foli
                 evt_class = 'Arctic tussock dwarf shrub tundra'
         # Define shrub types
         elif foliar_shrub >= 30:
-        # Define low shrub types
+            # Define low shrub types
             if ratio_willow_birch >= 0.4:
                 if wetland_indicator >= 10:
                     evt_class = 'Arctic willow low shrub, wet'
@@ -147,8 +175,11 @@ def evt_key(geomorphology, hyd_estuary_dist, foliar_forb, foliar_graminoid, foli
                 evt_class = 'Arctic sedge meadow, wet'
             else:
                 evt_class = 'Arctic freshwater marsh'
+    #### DEFINE FRESHWATER MARSH
+    elif surface == 10:
+        evt_class = 'Arctic freshwater marsh'
     #### DEFINE FLOODPLAIN TYPES
-    elif geomorphology in (4, 10):
+    elif surface in (4, 11):
         if foliar_alnus >= 5:
             evt_class = 'Arctic alder floodplain'
         elif foliar_wetsed >= 35:
@@ -158,27 +189,30 @@ def evt_key(geomorphology, hyd_estuary_dist, foliar_forb, foliar_graminoid, foli
         elif foliar_wetsed >= 10:
             evt_class = 'Arctic sedge meadow, wet'
         else:
-            if geomorphology == 10:
-                evt_class == 'stream corridor'
+            if surface == 10:
+                evt_class = 'stream corridor'
             else:
                 evt_class = 'unclassified floodplain'
     #### DEFINE COASTAL TYPES
     # Define tidal marshes
-    elif geomorphology == 11:
+    elif surface == 11:
         evt_class = 'Arctic herbaceous coastal salt marsh'
     # Define salt-killed
-    elif geomorphology == 12:
+    elif surface == 12:
         evt_class = 'salt-killed tundra or marsh'
+    # Define vegetated coastal beaches
+    elif surface == 14:
+        evt_class = 'Arctic herbaceous & dwarf shrub coastal beach'
     #### DEFINE NON-VEGETATED TYPES
     # Define barrens
-    elif geomorphology == 1:
-        if hyd_estuary_dist <= 100:
+    elif surface == 1:
+        if hyd_estuary_dist <= 20:
             evt_class = 'coastal and estuarine barren'
-        elif hyd_estuary_dist > 100:
+        elif hyd_estuary_dist > 20:
             evt_class = 'freshwater floodplain barren'
     # Define water
-    elif geomorphology == 13:
-        if foliar_wetsed >= 30:
+    elif surface == 13:
+        if foliar_wetsed >= 40:
             evt_class = 'Arctic freshwater marsh'
         else:
             evt_class = 'water'
@@ -198,8 +232,8 @@ for file in input_files:
 
     # Assign EVT
     input_data['evt'] = input_data.apply(
-        lambda row: evt_key(row['geomorphology'], row['hyd_estuary_dist'], row['foliar_forb'], row['foliar_graminoid'],
-                            row['foliar_lichen'], row['foliar_alnus'], row['foliar_betshr'], row['foliar_dryas'],
+        lambda row: evt_key(row['surface'], row['hyd_estuary_dist'],
+                            row['foliar_alnus'], row['foliar_betshr'], row['foliar_dryas'],
                             row['foliar_empnig'], row['foliar_erivag'], row['foliar_rhoshr'],
                             row['foliar_salshr'], row['foliar_sphagn'], row['foliar_vaculi'], row['foliar_vacvit'],
                             row['foliar_wetsed']),
@@ -212,7 +246,7 @@ for file in input_files:
     input_data['evt_value'] = input_data['evt'].apply(lambda x: evt_dictionary.get(x))
 
     # Save output data
-    output_data = input_data.drop(['shape_m', 'shape_m2'], axis=1)
+    output_data = input_data.drop(predictor_all, axis=1)
     output_data.to_csv(output_file, header=True, index=False, sep=',', encoding='utf-8')
 
     # Increase count

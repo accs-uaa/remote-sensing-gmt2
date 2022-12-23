@@ -84,9 +84,9 @@ if (!file.exists(output_raster)) {
 
 #### MERGE SURFICIAL PROBABILITIES
 label_list = c('barren', 'dunes', 'nonpatterned_drained', 'nonpatterned_floodplain',
-               'nonpatterned_mesic', 'permafrost_troughs', 'poly_mesiccenter',
-               'poly_wetcenter', 'freshwater_marsh', 'stream_corridor', 'tidal_marsh',
-               'salt_killed', 'water')
+               'nonpatterned_mesic', 'nonpolygon_wet', 'permafrost_troughs', 'polygon_mesic',
+               'polygon_wet', 'freshwater_marsh', 'stream_corridor', 'tidal_marsh',
+               'salt_killed', 'vegetated_beach', 'water')
 
 # Define output folder
 output_folder = paste(merge_folder, 'surficial_probability', sep = '/')

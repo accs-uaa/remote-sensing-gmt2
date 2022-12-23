@@ -124,17 +124,17 @@ for (grid in grid_list) {
 class_list = c('class_01', 'class_02', 'class_03', 'class_04',
               'class_05', 'class_06', 'class_07', 'class_08',
               'class_09', 'class_10', 'class_11', 'class_12',
-              'class_13')
+              'class_13', 'class_14', 'class_15')
 label_list = c('barren', 'dunes', 'nonpatterned_drained', 'nonpatterned_floodplain',
-               'nonpatterned_mesic', 'permafrost_troughs', 'poly_mesiccenter',
-               'poly_wetcenter', 'freshwater_marsh', 'stream_corridor', 'tidal_marsh',
-               'salt_killed', 'water')
+               'nonpatterned_mesic', 'nonpolygon_wet', 'permafrost_troughs', 'polygon_mesic',
+               'polygon_wet', 'freshwater_marsh', 'stream_corridor', 'tidal_marsh',
+               'salt_killed', 'vegetated_beach', 'water')
 
 # Create probability raster for each class
 for (i in seq(1, length(class_list), 1)) {
   # Define class number and label
   class_number = class_list[i]
-  class_label = class_label[i]
+  class_label = label_list[i]
   
   # Define output folder
   output_folder = paste(raster_folder, '/', 'sf_', class_label, sep = '')
@@ -164,7 +164,7 @@ for (i in seq(1, length(class_list), 1)) {
       # Bind predicted points to segment polygons and create value field
       segment_predictions = segment_polygon %>%
         dplyr::left_join(input_data, by = 'segment_id') %>%
-        dplyr::mutate(raster_value = as.integer(class_number * 1000))
+        mutate(raster_value = as.integer(!!as.name(class_number) * 1000))
     
       # Rasterize the polygon
       predicted_raster = fasterize(segment_predictions,

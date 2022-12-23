@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Post-process surficial features
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-15
+# Last Updated: 2022-12-23
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Post-process surficial features" processes the predicted raster into the final deliverable.
 # ---------------------------------------------------------------------------
@@ -13,8 +13,8 @@ from package_GeospatialProcessing import arcpy_geoprocessing
 from package_GeospatialProcessing import postprocess_predicted_raster
 
 # Set round date
-round_date = 'round_20221209'
-version_number = 'v0_1'
+round_date = 'round_20221219'
+version_number = 'v1_0'
 
 # Set root directory
 drive = 'N:/'
@@ -44,27 +44,31 @@ output_raster = os.path.join(project_folder, 'Data_Output/data_package', version
                              'GMT2_SurficialFeatures.tif')
 
 # Define surficial features dictionary
-surficial_dictionary = {'barren': 1,
-                        'dunes': 2,
-                        'non-patterned, drained': 3,
-                        'non-patterned, floodplain': 4,
-                        'non-patterned, mesic': 5,
-                        'permafrost troughs': 6,
-                        'polygonal, mesic center': 7,
-                        'polygonal, wet center': 8,
-                        'freshwater marsh': 9,
-                        'stream corridor': 10,
-                        'tidal marsh': 11,
-                        'salt-killed': 12,
-                        'water': 13}
+class_values = {'barren': 1,
+                'dunes': 2,
+                'non-patterned, drained': 3,
+                'non-patterned, floodplain': 4,
+                'non-patterned, mesic': 5,
+                'non-polygonal, wet': 6,
+                'permafrost troughs': 7,
+                'polygonal, mesic': 8,
+                'polygonal, wet': 9,
+                'freshwater marsh': 10,
+                'stream corridor': 11,
+                'tidal marsh': 12,
+                'salt-killed': 13,
+                'vegetated coastal beach': 14,
+                'water': 15,
+                'pipeline': 16,
+                'infrastructure': 17}
 
 # Create key word arguments
 kwargs_process = {'minimum_count': 505,
-                  'stream_value': 10,
-                  'water_value': 13,
-                  'pipeline_value': 14,
-                  'infrastructure_value': 15,
-                  'attribute_dictionary': surficial_dictionary,
+                  'stream_value': 11,
+                  'water_value': 15,
+                  'pipeline_value': 16,
+                  'infrastructure_value': 17,
+                  'attribute_dictionary': class_values,
                   'work_geodatabase': work_geodatabase,
                   'input_array': [study_raster, input_raster, infrastructure_feature, infrastructure_raster,
                                   segments_feature, pipeline_raster, stream_raster],

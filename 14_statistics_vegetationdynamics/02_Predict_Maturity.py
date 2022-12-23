@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Predict phenology maturity
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-15
+# Last Updated: 2022-12-23
 # Usage: Must be executed in an Anaconda Python 3.9+ distribution.
 # Description: "Predict phenology maturity" predicts a random forest model to a set of grid csv files containing extracted covariate values to produce a set of output predictions. The script must be run on a machine that can support 4 cores.
 # ---------------------------------------------------------------------------
@@ -16,7 +16,7 @@ import time
 import datetime
 
 # Define round
-round_date = 'round_20221209'
+round_date = 'round_20221219'
 
 #### SET UP DIRECTORIES, FILES, AND FIELDS
 
@@ -43,11 +43,11 @@ predictor_all = ['foliar_forb', 'foliar_graminoid', 'foliar_lichen',
                  'foliar_alnus', 'foliar_betshr', 'foliar_dryas', 'foliar_empnig',
                  'foliar_erivag', 'foliar_rhoshr', 'foliar_salshr', 'foliar_sphagn',
                  'foliar_vaculi', 'foliar_vacvit', 'foliar_wetsed',
-                 'prob_barren', 'prob_dunes', 'prob_freshmarsh', 'prob_nonpatternedmesic',
-                 'prob_nonpatterneddrained', 'prob_floodplain', 'prob_troughs',
-                 'prob_polymesic', 'prob_polywet', 'prob_saltkilled', 'prob_streamcorridor',
-                 'prob_tidalmarsh', 'prob_water',
-                 'hyd_estuary_dist', 'hyd_seasonal_water',
+                 'prob_barren', 'prob_dunes', 'prob_nonpatterneddrained',
+                 'prob_floodplain', 'prob_nonpatternedmesic', 'prob_nonpolywet',
+                 'prob_troughs', 'prob_polymesic', 'prob_polywet', 'prob_freshmarsh',
+                 'prob_streamcorridor', 'prob_tidalmarsh', 'prob_saltkilled', 'prob_coastalbeach',
+                 'prob_water', 'hyd_estuary_dist', 'hyd_seasonal_water',
                  'inf_developed', 'inf_pipeline',
                  'year']
 retain_variables = ['segment_id', 'POINT_X', 'POINT_Y']

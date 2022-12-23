@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Extract covariates to points
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-15
+# Last Updated: 2022-12-23
 # Usage: Must be executed in R 4.0.0+.
 # Description: "Extract covariates to points" extracts data from rasters to MODIS sample grid points.
 # ---------------------------------------------------------------------------
@@ -82,16 +82,18 @@ point_zonal = point_zonal %>%
                 foliar_wetsed = NorthAmericanBeringia_wetsed_A6,
                 prob_barren = GMT2_Probability_barren,
                 prob_dunes = GMT2_Probability_dunes,
-                prob_freshmarsh = GMT2_Probability_freshwater_marsh,
-                prob_nonpatternedmesic = GMT2_Probability_nonpatterned_mesic,
                 prob_nonpatterneddrained = GMT2_Probability_nonpatterned_drained,
                 prob_floodplain = GMT2_Probability_nonpatterned_floodplain,
+                prob_nonpatternedmesic = GMT2_Probability_nonpatterned_mesic,
+                prob_nonpolywet = GMT2_Probability_nonpolygon_wet,
                 prob_troughs = GMT2_Probability_permafrost_troughs,
-                prob_polymesic = GMT2_Probability_poly_mesiccenter,
-                prob_polywet = GMT2_Probability_poly_wetcenter,
-                prob_saltkilled = GMT2_Probability_salt_killed,
+                prob_polymesic = GMT2_Probability_polygon_mesic,
+                prob_polywet = GMT2_Probability_polygon_wet,
+                prob_freshmarsh = GMT2_Probability_freshwater_marsh,
                 prob_streamcorridor = GMT2_Probability_stream_corridor,
                 prob_tidalmarsh = GMT2_Probability_tidal_marsh,
+                prob_saltkilled = GMT2_Probability_salt_killed,
+                prob_coastalbeach = GMT2_Probability_vegetated_beach,
                 prob_water = GMT2_Probability_water,
                 cv_group = GMT2_ValidationGroups,
                 phen_2001_01_greenup = MCD12Q2006_2001_01_midgreenup,
@@ -199,10 +201,12 @@ independent_data = point_zonal %>%
          foliar_forb, foliar_graminoid, foliar_lichen, foliar_alnus,
          foliar_betshr, foliar_dryas, foliar_empnig, foliar_erivag,
          foliar_rhoshr, foliar_salshr, foliar_sphagn, foliar_vaculi,
-         foliar_vacvit, foliar_wetsed, prob_barren, prob_dunes,
-         prob_freshmarsh, prob_nonpatternedmesic, prob_nonpatterneddrained, prob_floodplain,
-         prob_troughs, prob_polymesic, prob_polywet, prob_saltkilled,
-         prob_streamcorridor, prob_tidalmarsh, prob_water, cv_group) %>%
+         foliar_vacvit, foliar_wetsed,
+         prob_barren, prob_dunes, prob_nonpatterneddrained,
+         prob_floodplain, prob_nonpatternedmesic, prob_nonpolywet,
+         prob_troughs, prob_polymesic, prob_polywet, prob_freshmarsh,
+         prob_streamcorridor, prob_tidalmarsh, prob_saltkilled, prob_coastalbeach,
+         prob_water, cv_group) %>%
   mutate(across(everything(), .fns = ~replace_na(.,0))) %>%
   mutate(cv_group = as.integer(cv_group))
 response_data = point_zonal %>%
@@ -211,11 +215,12 @@ response_data = point_zonal %>%
                 -foliar_forb, -foliar_graminoid, -foliar_lichen, -foliar_alnus,
                 -foliar_betshr, -foliar_dryas, -foliar_empnig, -foliar_erivag,
                 -foliar_rhoshr, -foliar_salshr, -foliar_sphagn, -foliar_vaculi,
-                -foliar_vacvit, -foliar_wetsed, -prob_barren, -prob_dunes,
-                -prob_freshmarsh, -prob_nonpatternedmesic, -prob_nonpatterneddrained, -prob_floodplain,
-                -GMT2_Probability_poly_mixed,
-                -prob_troughs, -prob_polymesic, -prob_polywet, -prob_saltkilled,
-                -prob_streamcorridor, -prob_tidalmarsh, -prob_water, -cv_group) %>%
+                -foliar_vacvit, -foliar_wetsed,
+                -prob_barren, -prob_dunes, -prob_nonpatterneddrained,
+                -prob_floodplain, -prob_nonpatternedmesic, -prob_nonpolywet,
+                -prob_troughs, -prob_polymesic, -prob_polywet, -prob_freshmarsh,
+                -prob_streamcorridor, -prob_tidalmarsh, -prob_saltkilled, -prob_coastalbeach,
+                -prob_water, -cv_group) %>%
   pivot_longer(!pointid, names_to = 'covariate', values_to = 'value') %>%
   mutate(year = case_when(str_detect(covariate, '2000', negate=FALSE) ~ 0,
                           str_detect(covariate, '2001', negate=FALSE) ~ 1,
