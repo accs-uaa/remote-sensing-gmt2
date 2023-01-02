@@ -28,7 +28,7 @@ root_folder = 'ACCS_Work'
 data_folder = os.path.join(drive,
                            root_folder,
                            'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
-input_folder = os.path.join(data_folder, 'Data_Output/predicted_tables', round_date, 'geomorphology')
+input_folder = os.path.join(data_folder, 'Data_Output/predicted_tables', round_date, 'surficial_features')
 model_folder = os.path.join(data_folder, 'Data_Output/model_results', round_date, 'phen_senescence')
 output_folder = os.path.join(data_folder, 'Data_Output/predicted_tables', round_date, 'phen_senescence')
 
@@ -100,14 +100,16 @@ for year in year_list:
                                                 'class_03': 'prob_nonpatterneddrained',
                                                 'class_04': 'prob_floodplain',
                                                 'class_05': 'prob_nonpatternedmesic',
-                                                'class_06': 'prob_troughs',
-                                                'class_07': 'prob_polymesic',
-                                                'class_08': 'prob_polywet',
-                                                'class_09': 'prob_freshmarsh',
-                                                'class_10': 'prob_streamcorridor',
-                                                'class_11': 'prob_tidalmarsh',
-                                                'class_12': 'prob_saltkilled',
-                                                'class_13': 'prob_water'})
+                                                'class_06': 'prob_nonpolywet',
+                                                'class_07': 'prob_troughs',
+                                                'class_08': 'prob_polymesic',
+                                                'class_09': 'prob_polywet',
+                                                'class_10': 'prob_freshmarsh',
+                                                'class_11': 'prob_streamcorridor',
+                                                'class_12': 'prob_tidalmarsh',
+                                                'class_13': 'prob_saltkilled',
+                                                'class_14': 'prob_coastalbeach',
+                                                'class_15': 'prob_water'})
             all_data = all_data.assign(year=year)
             # Select input data
             input_data = all_data[retain_variables + predictor_all].copy()

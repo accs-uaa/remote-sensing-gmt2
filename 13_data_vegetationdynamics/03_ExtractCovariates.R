@@ -3,7 +3,7 @@
 # Extract covariates to points
 # Author: Timm Nawrocki
 # Last Updated: 2022-12-23
-# Usage: Must be executed in R 4.0.0+.
+# Usage: Must be executed in R 4.1.0+.
 # Description: "Extract covariates to points" extracts data from rasters to MODIS sample grid points.
 # ---------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ sample_points = 'MODIS_SamplingGrid_500m_Points'
 # Define output data
 output_file = paste(output_folder, 'MODIS_SamplingGrid_Extracted.csv', sep = '/')
 
-# Import required libraries for geospatial processing: dplyr, raster, rgdal, sp, and stringr.
+# Import libraries
 library(dplyr)
 library(raster)
 library(sf)

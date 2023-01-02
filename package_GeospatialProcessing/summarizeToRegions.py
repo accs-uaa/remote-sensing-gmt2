@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Summarize to regions
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-13
+# Last Updated: 2022-12-23
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Summarize to regions" is a function that summarizes a continuous raster to regions defined by a categorical raster.
 # ---------------------------------------------------------------------------
@@ -26,6 +26,7 @@ def summarize_to_regions(**kwargs):
     from arcpy.sa import ZonalStatistics
     import datetime
     import time
+    import os
 
     # Parse key word argument inputs
     work_geodatabase = kwargs['work_geodatabase']
@@ -33,6 +34,9 @@ def summarize_to_regions(**kwargs):
     continuous_raster = kwargs['input_array'][1]
     categorical_raster = kwargs['input_array'][2]
     output_raster = kwargs['output_array'][0]
+
+    # Define intermediate datasets
+    input_integer = os.path.join(os.path.split(categorical_raster)[0], 'integer.tif')
 
     # Set overwrite option
     arcpy.env.overwriteOutput = True
@@ -57,8 +61,25 @@ def summarize_to_regions(**kwargs):
     # Calculate regions
     print(f'\tCalculating regions...')
     iteration_start = time.time()
+    # Copy raster to integer
+    arcpy.management.CopyRaster(categorical_raster,
+                                input_integer,
+                                '',
+                                '',
+                                '-128',
+                                'NONE',
+                                'NONE',
+                                '8_BIT_SIGNED',
+                                'NONE',
+                                'NONE',
+                                'TIFF',
+                                'NONE',
+                                'CURRENT_SLICE',
+                                'NO_TRANSPOSE')
+    arcpy.management.CalculateStatistics(input_integer)
+    arcpy.management.BuildRasterAttributeTable(input_integer, 'Overwrite')
     # Calculate regions
-    raster_regions = RegionGroup(Raster(categorical_raster),
+    raster_regions = RegionGroup(Raster(input_integer),
                                  'FOUR',
                                  'WITHIN',
                                  'NO_LINK')
@@ -104,6 +125,10 @@ def summarize_to_regions(**kwargs):
     print(
         f'\tCompleted at {iteration_success_time.strftime("%Y-%m-%d %H:%M")} (Elapsed time: {datetime.timedelta(seconds=iteration_elapsed)})')
     print('\t----------')
+
+    # Delete intermediate datasets
+    if arcpy.Exists(input_integer) == 1:
+        arcpy.management.Delete(input_integer)
 
     # Return success message
     out_process = f'Successfully summarized continuous raster.'

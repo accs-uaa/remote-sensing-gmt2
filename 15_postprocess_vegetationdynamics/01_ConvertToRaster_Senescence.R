@@ -8,7 +8,7 @@
 # ---------------------------------------------------------------------------
 
 # Define round date and target
-round_date = 'round_20221209'
+round_date = 'round_20221219'
 target = 'pred_senescence'
 
 # Set root directory
@@ -44,13 +44,11 @@ raster_folder = paste(project_folder,
                       'phen_senescence',
                       sep = '/')
 
-# Import required libraries for geospatial processing: sp, raster, rgdal, and stringr.
+# Import libraries
 library(dplyr)
 library(fasterize)
-library(sf)
-library(sp)
 library(raster)
-library(rgdal)
+library(sf)
 library(stringr)
 
 # Define grids

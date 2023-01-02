@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# Post-process NPP
+# Post-process Phenology Greendown
 # Author: Timm Nawrocki
 # Last Updated: 2022-12-27
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
-# Description: "Post-process NPP" calculates mean NPP and corrects to predicted surface types.
+# Description: "Post-process Phenology Greendown" calculates mean greendown date and corrects to predicted surface types.
 # ---------------------------------------------------------------------------
 
 # Import packages
@@ -23,8 +23,8 @@ root_folder = 'ACCS_Work'
 
 # Define folder structure
 project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
-input_folder = os.path.join(project_folder, 'Data_Output/output_rasters', round_date, 'productivity')
-output_folder = os.path.join(project_folder, 'Data_Output/data_package', version_number, 'productivity')
+input_folder = os.path.join(project_folder, 'Data_Output/output_rasters', round_date, 'phen_greendown')
+output_folder = os.path.join(project_folder, 'Data_Output/data_package', version_number, 'phen_greendown')
 
 # Define geodatabases
 work_geodatabase = os.path.join(project_folder, 'GMT2_Workspace.gdb')
@@ -53,31 +53,31 @@ for input_set in input_list:
 
     # Define input rasters
     for year in input_set:
-        input_raster = os.path.join(input_folder, f'GMT2_Productivity_{str(year+2000)}.tif')
+        input_raster = os.path.join(input_folder, f'GMT2_Phen_Greendown_{str(year+2000)}.tif')
         input_rasters.append(input_raster)
 
     # Define output raster
     if count == 1:
-        output_raster = os.path.join(output_folder, 'GMT2_Productivity_2005.tif')
+        output_raster = os.path.join(output_folder, 'GMT2_Phen_Greendown_2005.tif')
     elif count == 2:
-        output_raster = os.path.join(output_folder, 'GMT2_Productivity_2010.tif')
+        output_raster = os.path.join(output_folder, 'GMT2_Phen_Greendown_2010.tif')
     elif count == 3:
-        output_raster = os.path.join(output_folder, 'GMT2_Productivity_2015.tif')
+        output_raster = os.path.join(output_folder, 'GMT2_Phen_Greendown_2015.tif')
     else:
-        output_raster = os.path.join(output_folder, 'GMT2_Productivity_2020.tif')
+        output_raster = os.path.join(output_folder, 'GMT2_Phen_Greendown_2020.tif')
 
     # Create output raster if it does not already exist
     if arcpy.Exists(output_raster) == 0:
         # Create key word arguments
         kwargs_process = {'calculate_mean': True,
                           'conditional_statement': 'VALUE = 1 Or VALUE = 2 Or VALUE = 5',
-                          'data_type': '16_BIT_SIGNED',
+                          'data_type': '8_BIT_UNSIGNED',
                           'work_geodatabase': work_geodatabase,
                           'input_array': [study_raster, evt_raster, infrastructure_raster] + input_rasters,
                           'output_array': [output_raster]
                           }
 
-        # Post-process productivity rasters
+        # Post-process phenology rasters
         print(f'Post-processing raster {count} of {input_length}...')
         arcpy_geoprocessing(postprocess_continuous_raster, **kwargs_process)
         print('----------')

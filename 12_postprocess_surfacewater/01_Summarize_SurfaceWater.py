@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Summarize surface water to surficial features
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-13
+# Last Updated: 2022-12-23
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Summarize surface water to surficial features" processes the surficial water raster into the final deliverable.
 # ---------------------------------------------------------------------------
@@ -13,8 +13,8 @@ from package_GeospatialProcessing import arcpy_geoprocessing
 from package_GeospatialProcessing import summarize_to_regions
 
 # Set round date
-round_date = 'round_20221209'
-version_number = 'v0_1'
+round_date = 'round_20221219'
+version_number = 'v1_0'
 
 # Set root directory
 drive = 'N:/'
@@ -31,7 +31,7 @@ study_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
 water_raster = os.path.join(project_folder, 'Data_Output/output_rasters',
                             round_date, 'surface_water', 'GMT2_SeasonalWater_Percentage.tif')
 surficial_raster = os.path.join(project_folder, 'Data_Output/output_rasters',
-                                round_date, 'geomorphology', 'GMT2_Geomorphology_R4_Final.tif')
+                                round_date, 'surficial_features', 'GMT2_SurficialFeatures.tif')
 
 # Define output raster
 output_raster = os.path.join(project_folder, 'Data_Output/data_package', version_number, 'surface_water',

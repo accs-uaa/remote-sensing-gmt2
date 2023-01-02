@@ -18,13 +18,13 @@ drive = 'N:/'
 root_folder = 'ACCS_Work'
 
 # Define round date
-round_date = 'round_20221209'
+round_date = 'round_20221219'
 
 # Define folder structure
 project_folder = os.path.join(drive, root_folder, 'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
 vegetation_folder = os.path.join(project_folder, 'Data_Input/vegetation/foliar_cover')
 surficial_folder = os.path.join(project_folder, 'Data_Output/output_rasters', round_date,
-                                'geomorphology/probability')
+                                'surficial_probability')
 infrastructure_folder = os.path.join(project_folder, 'Data_Input/infrastructure')
 productivity_folder = os.path.join(project_folder, 'Data_Input/imagery/modis_productivity/processed')
 phenology_folder = os.path.join(project_folder, 'Data_Input/imagery/modis_phenology/processed')

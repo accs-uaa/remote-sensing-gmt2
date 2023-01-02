@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# Predict phenology maturity
+# Predict phenology greendown
 # Author: Timm Nawrocki
 # Last Updated: 2022-12-23
 # Usage: Must be executed in an Anaconda Python 3.9+ distribution.
-# Description: "Predict phenology maturity" predicts a random forest model to a set of grid csv files containing extracted covariate values to produce a set of output predictions. The script must be run on a machine that can support 4 cores.
+# Description: "Predict phenology greendown" predicts a random forest model to a set of grid csv files containing extracted covariate values to produce a set of output predictions. The script must be run on a machine that can support 4 cores.
 # ---------------------------------------------------------------------------
 
 # Import packages
@@ -29,8 +29,8 @@ data_folder = os.path.join(drive,
                            root_folder,
                            'Projects/VegetationEcology/BLM_AIM/GMT-2/Data')
 input_folder = os.path.join(data_folder, 'Data_Output/predicted_tables', round_date, 'surficial_features')
-model_folder = os.path.join(data_folder, 'Data_Output/model_results', round_date, 'phen_maturity')
-output_folder = os.path.join(data_folder, 'Data_Output/predicted_tables', round_date, 'phen_maturity')
+model_folder = os.path.join(data_folder, 'Data_Output/model_results', round_date, 'phen_greendown')
+output_folder = os.path.join(data_folder, 'Data_Output/predicted_tables', round_date, 'phen_greendown')
 
 # Define input files
 os.chdir(input_folder)
@@ -38,7 +38,7 @@ input_files = glob.glob('*.csv')
 regressor_path = os.path.join(model_folder, 'regressor.joblib')
 
 # Define variable sets
-regress_variable = ['maturity']
+regress_variable = ['greenup']
 predictor_all = ['foliar_forb', 'foliar_graminoid', 'foliar_lichen',
                  'foliar_alnus', 'foliar_betshr', 'foliar_dryas', 'foliar_empnig',
                  'foliar_erivag', 'foliar_rhoshr', 'foliar_salshr', 'foliar_sphagn',
@@ -51,7 +51,7 @@ predictor_all = ['foliar_forb', 'foliar_graminoid', 'foliar_lichen',
                  'inf_developed', 'inf_pipeline',
                  'year']
 retain_variables = ['segment_id', 'POINT_X', 'POINT_Y']
-predict_variable = ['pred_maturity']
+predict_variable = ['pred_greendown']
 output_columns = retain_variables + predict_variable
 
 # Define random state

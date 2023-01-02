@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Post-process existing vegetation type
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-12
+# Last Updated: 2022-12-27
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Post-process existing vegetation type" processes the predicted raster into the final deliverable.
 # ---------------------------------------------------------------------------
@@ -10,11 +10,11 @@
 # Import packages
 import os
 from package_GeospatialProcessing import arcpy_geoprocessing
-from package_GeospatialProcessing import postprocess_predicted_raster
+from package_GeospatialProcessing import postprocess_categorical_raster
 
 # Set round date
-round_date = 'round_20221209'
-version_number = 'v0_1'
+round_date = 'round_20221219'
+version_number = 'v1_0'
 
 # Set root directory
 drive = 'N:/'
@@ -30,7 +30,7 @@ work_geodatabase = os.path.join(project_folder, 'GMT2_Workspace.gdb')
 # Define input datasets
 study_raster = os.path.join(project_folder, 'Data_Input/GMT2_StudyArea.tif')
 input_raster = os.path.join(project_folder, 'Data_Output/output_rasters',
-                            round_date, 'vegetation', 'GMT2_ExistingVegetationType.tif')
+                            round_date, 'vegetation_type', 'GMT2_ExistingVegetationType.tif')
 infrastructure_feature = os.path.join(project_geodatabase, 'Infrastructure_Developed')
 infrastructure_raster = os.path.join(project_folder, 'Data_Input/infrastructure',
                                      'Infrastructure_Developed.tif')
@@ -44,13 +44,13 @@ output_raster = os.path.join(project_folder, 'Data_Output/data_package', version
                              'GMT2_ExistingVegetationType.tif')
 
 # Define EVT dictionary
-evt_dictionary = {'coastal and estuarine barren': 1,
+evt_dictionary = {'coastal & estuarine barren': 1,
                   'freshwater floodplain barren': 2,
                   'salt-killed tundra or marsh': 3,
                   'stream corridor': 4,
                   'water': 5,
-                  'infrastructure': 6,
-                  'pipelines': 7,
+                  'pipelines': 6,
+                  'infrastructure': 7,
                   'Arctic freshwater marsh': 8,
                   'Arctic herbaceous & dwarf shrub coastal beach': 9,
                   'Arctic herbaceous & shrub coastal dune': 10,
@@ -66,9 +66,7 @@ evt_dictionary = {'coastal and estuarine barren': 1,
                   'Arctic willow floodplain': 20,
                   'Arctic willow inland dune': 21,
                   'Arctic tussock dwarf shrub tundra': 22,
-                  'Arctic tussock low shrub tundra': 23,
-                  'unclassified': 24,
-                  'unclassified floodplain': 25
+                  'Arctic tussock low shrub tundra': 23
                   }
 
 # Create key word arguments
@@ -77,6 +75,7 @@ kwargs_process = {'minimum_count': 505,
                   'water_value': 5,
                   'pipeline_value': 6,
                   'infrastructure_value': 7,
+                  'conditional_statement': 'VALUE = 1 Or VALUE = 2 Or VALUE = 10 Or VALUE = 12 Or VALUE = 14 Or VALUE = 21',
                   'attribute_dictionary': evt_dictionary,
                   'work_geodatabase': work_geodatabase,
                   'input_array': [study_raster, input_raster, infrastructure_feature, infrastructure_raster,
@@ -86,5 +85,5 @@ kwargs_process = {'minimum_count': 505,
 
 # Post-process EVT raster
 print(f'Post-processing EVT raster...')
-arcpy_geoprocessing(postprocess_predicted_raster, **kwargs_process)
+arcpy_geoprocessing(postprocess_categorical_raster, **kwargs_process)
 print('----------')

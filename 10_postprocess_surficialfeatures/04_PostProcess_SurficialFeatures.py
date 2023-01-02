@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Post-process surficial features
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-23
+# Last Updated: 2022-12-27
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
 # Description: "Post-process surficial features" processes the predicted raster into the final deliverable.
 # ---------------------------------------------------------------------------
@@ -10,7 +10,7 @@
 # Import packages
 import os
 from package_GeospatialProcessing import arcpy_geoprocessing
-from package_GeospatialProcessing import postprocess_predicted_raster
+from package_GeospatialProcessing import postprocess_categorical_raster
 
 # Set round date
 round_date = 'round_20221219'
@@ -50,7 +50,7 @@ class_values = {'barren': 1,
                 'non-patterned, floodplain': 4,
                 'non-patterned, mesic': 5,
                 'non-polygonal, wet': 6,
-                'permafrost troughs': 7,
+                'thermokarst troughs': 7,
                 'polygonal, mesic': 8,
                 'polygonal, wet': 9,
                 'freshwater marsh': 10,
@@ -68,6 +68,7 @@ kwargs_process = {'minimum_count': 505,
                   'water_value': 15,
                   'pipeline_value': 16,
                   'infrastructure_value': 17,
+                  'conditional_statement': 'VALUE = 1 Or VALUE = 2 Or VALUE = 3',
                   'attribute_dictionary': class_values,
                   'work_geodatabase': work_geodatabase,
                   'input_array': [study_raster, input_raster, infrastructure_feature, infrastructure_raster,
@@ -77,5 +78,5 @@ kwargs_process = {'minimum_count': 505,
 
 # Post-process surficial features raster
 print(f'Post-processing surficial features raster...')
-arcpy_geoprocessing(postprocess_predicted_raster, **kwargs_process)
+arcpy_geoprocessing(postprocess_categorical_raster, **kwargs_process)
 print('----------')

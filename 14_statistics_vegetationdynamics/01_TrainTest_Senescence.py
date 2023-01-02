@@ -73,7 +73,7 @@ rstate = 21
 #### CONDUCT MODEL TRAIN AND TEST ITERATIONS
 
 # Create a standardized parameter set for a random forest classifier
-rf_params = {'n_estimators': 10,
+rf_params = {'n_estimators': 500,
              'criterion': 'squared_error',
              'max_depth': None,
              'min_samples_split': 2,

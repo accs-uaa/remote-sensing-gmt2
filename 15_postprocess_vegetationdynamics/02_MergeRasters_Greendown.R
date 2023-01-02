@@ -8,7 +8,7 @@
 # ---------------------------------------------------------------------------
 
 # Define round date
-round_date = 'round_20221209'
+round_date = 'round_20221219'
 
 # Set root directory
 drive = 'N:'
@@ -34,10 +34,8 @@ output_folder = paste(project_folder,
                       'phen_greendown',
                       sep = '/')
 
-# Import required libraries for geospatial processing: sp, raster, rgdal, and stringr.
-library(sp)
+# Import libraries
 library(raster)
-library(rgdal)
 
 # Create year list
 year_list = seq(1, 20, 1)

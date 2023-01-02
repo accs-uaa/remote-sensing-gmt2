@@ -2,13 +2,13 @@
 # ---------------------------------------------------------------------------
 # Convert existing vegetation type predictions to rasters
 # Author: Timm Nawrocki, Alaska Center for Conservation Science
-# Last Updated: 2022-12-15
+# Last Updated: 2022-12-26
 # Usage: Script must be executed using R 4.2.1+.
 # Description: "Convert existing vegetation type predictions to rasters" processes the predicted tables into predicted rasters by grid.
 # ---------------------------------------------------------------------------
 
 # Define round date and target
-round_date = 'round_20221209'
+round_date = 'round_20221219'
 
 # Set root directory
 drive = 'N:'
@@ -43,13 +43,11 @@ raster_folder = paste(project_folder,
                       'vegetation_type',
                       sep = '/')
 
-# Import required libraries for geospatial processing: sp, raster, rgdal, and stringr.
+# Import libraries
 library(dplyr)
 library(fasterize)
-library(sf)
-library(sp)
 library(raster)
-library(rgdal)
+library(sf)
 library(stringr)
 
 # Define grids

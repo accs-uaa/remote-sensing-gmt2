@@ -42,13 +42,11 @@ raster_folder = paste(project_folder,
                       round_date,
                       sep = '/')
 
-# Import required libraries for geospatial processing: sp, raster, rgdal, and stringr.
+# Import libraries
 library(dplyr)
 library(fasterize)
-library(sf)
-library(sp)
 library(raster)
-library(rgdal)
+library(sf)
 library(stringr)
 
 # Define grids

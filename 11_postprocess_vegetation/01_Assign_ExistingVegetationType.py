@@ -2,7 +2,7 @@
 # ---------------------------------------------------------------------------
 # Assign existing vegetation type
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-23
+# Last Updated: 2022-12-26
 # Usage: Must be executed in an Anaconda Python 3.9+ distribution.
 # Description: "Assign existing vegetation type" assigns a vegetation type label from surficial features and foliar cover.
 # ---------------------------------------------------------------------------
@@ -13,7 +13,7 @@ import pandas as pd
 import os
 
 # Define round
-round_date = 'round_20221209'
+round_date = 'round_20221219'
 
 # Set root directory
 drive = 'N:/'
@@ -23,8 +23,8 @@ root_folder = 'ACCS_Work'
 data_folder = os.path.join(drive,
                            root_folder,
                            'Projects/VegetationEcology/BLM_AIM/GMT-2/Data/Data_Output')
-input_folder = os.path.join(data_folder, 'predicted_tables', round_date, 'surface')
-output_folder = os.path.join(data_folder, 'predicted_tables', round_date, 'vegetation')
+input_folder = os.path.join(data_folder, 'predicted_tables', round_date, 'surficial_features')
+output_folder = os.path.join(data_folder, 'predicted_tables', round_date, 'vegetation_type')
 
 # Define input files
 os.chdir(input_folder)
@@ -39,7 +39,7 @@ predictor_all = ['top_aspect', 'top_elevation', 'top_exposure', 'top_heat_load',
                  'comp_01_blue_std', 'comp_02_green_std', 'comp_03_red_std', 'comp_04_nearir_std',
                  'comp_evi2_std', 'comp_ndvi_std', 'comp_ndwi_std',
                  'maxar_ndvi_std', 'maxar_ndvi_rng', 'maxar_ndwi_std', 'maxar_ndwi_rng',
-                 's1_vh', 's1_vv', 'shape_m', 'shape_m2',
+                 's1_vh', 's1_vv',
                  's2_06_02_blue', 's2_06_03_green', 's2_06_04_red', 's2_06_05_rededge1', 's2_06_06_rededge2',
                  's2_06_07_rededge3', 's2_06_08_nearir', 's2_06_08a_rededge4', 's2_06_11_shortir1', 's2_06_12_shortir2',
                  's2_06_evi2', 's2_06_nbr', 's2_06_ndmi', 's2_06_ndsi', 's2_06_ndvi', 's2_06_ndwi',
@@ -58,13 +58,13 @@ predictor_all = ['top_aspect', 'top_elevation', 'top_exposure', 'top_heat_load',
                  'inf_developed', 'inf_pipeline']
 
 # Define EVT dictionary
-evt_dictionary = {'coastal and estuarine barren': 1,
+evt_dictionary = {'coastal & estuarine barren': 1,
                   'freshwater floodplain barren': 2,
                   'salt-killed tundra or marsh': 3,
                   'stream corridor': 4,
                   'water': 5,
-                  'infrastructure': 6,
-                  'pipelines': 7,
+                  'pipelines': 6,
+                  'infrastructure': 7,
                   'Arctic freshwater marsh': 8,
                   'Arctic herbaceous & dwarf shrub coastal beach': 9,
                   'Arctic herbaceous & shrub coastal dune': 10,
@@ -112,12 +112,16 @@ def evt_key(surface, hyd_estuary_dist,
                 evt_class = 'Arctic tussock low shrub tundra'
             else:
                 evt_class = 'Arctic tussock dwarf shrub tundra'
+        # Set the default value for the surface type
+        else:
+            evt_class = 'Arctic Dryas-ericaceous dwarf shrub, acidic'
     #### DEFINE DUNE TYPES
     elif surface == 2:
         if hyd_estuary_dist <= 100:
             evt_class = 'Arctic herbaceous & shrub coastal dune'
         elif hyd_estuary_dist > 100 and foliar_salshr >= 5:
             evt_class = 'Arctic willow inland dune'
+        # Set the default value for the surface type
         else:
             evt_class = 'Arctic herbaceous inland dune'
     #### DEFINE MESIC TYPES
@@ -129,9 +133,9 @@ def evt_key(surface, hyd_estuary_dist,
             else:
                 evt_class = 'Arctic tussock dwarf shrub tundra'
         # Define shrub types
-        elif foliar_shrub >= 10:
+        elif foliar_shrub >= 30: ## WAS 10
             # Define low shrub types
-            if foliar_lowshrub >= 15:
+            if foliar_lowshrub >= 20:
                 if ratio_willow_birch >= 0.4:
                     if wetland_indicator >= 10:
                         evt_class = 'Arctic willow low shrub, wet'
@@ -143,11 +147,14 @@ def evt_key(surface, hyd_estuary_dist,
                     else:
                         evt_class = 'Arctic birch low shrub, mesic'
             # Define dwarf shrub types
-            elif foliar_dryeri >= 5:
+            elif foliar_dryeri >= 10: ## WAS 5
                 evt_class = 'Arctic Dryas-ericaceous dwarf shrub, acidic'
         # Define herbaceous types
         elif foliar_wetsed >= 10:
             evt_class = 'Arctic sedge meadow, wet'
+        # Set the default value for the surface type
+        else:
+            evt_class = 'Arctic tussock dwarf shrub tundra'
     #### DEFINE WET TYPES
     elif surface in (6, 9):
         # Define tussock tundra
@@ -175,6 +182,9 @@ def evt_key(surface, hyd_estuary_dist,
                 evt_class = 'Arctic sedge meadow, wet'
             else:
                 evt_class = 'Arctic freshwater marsh'
+        # Set the default value for the surface type
+        else:
+            evt_class = 'Arctic sedge meadow, wet'
     #### DEFINE FRESHWATER MARSH
     elif surface == 10:
         evt_class = 'Arctic freshwater marsh'
@@ -188,17 +198,18 @@ def evt_key(surface, hyd_estuary_dist,
             evt_class = 'Arctic willow floodplain'
         elif foliar_wetsed >= 10:
             evt_class = 'Arctic sedge meadow, wet'
+        # Set the default values for the surface types
         else:
             if surface == 10:
                 evt_class = 'stream corridor'
             else:
-                evt_class = 'unclassified floodplain'
+                evt_class = 'Arctic willow floodplain'
     #### DEFINE COASTAL TYPES
     # Define tidal marshes
-    elif surface == 11:
+    elif surface == 12:
         evt_class = 'Arctic herbaceous coastal salt marsh'
     # Define salt-killed
-    elif surface == 12:
+    elif surface == 13:
         evt_class = 'salt-killed tundra or marsh'
     # Define vegetated coastal beaches
     elif surface == 14:
@@ -207,11 +218,11 @@ def evt_key(surface, hyd_estuary_dist,
     # Define barrens
     elif surface == 1:
         if hyd_estuary_dist <= 20:
-            evt_class = 'coastal and estuarine barren'
+            evt_class = 'coastal & estuarine barren'
         elif hyd_estuary_dist > 20:
             evt_class = 'freshwater floodplain barren'
     # Define water
-    elif surface == 13:
+    elif surface == 15:
         if foliar_wetsed >= 40:
             evt_class = 'Arctic freshwater marsh'
         else:

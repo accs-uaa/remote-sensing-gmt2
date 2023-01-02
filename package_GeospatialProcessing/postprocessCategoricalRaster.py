@@ -1,27 +1,28 @@
 # -*- coding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# Post-process predicted rasters
+# Post-process categorical rasters
 # Author: Timm Nawrocki
-# Last Updated: 2022-12-12
+# Last Updated: 2022-12-27
 # Usage: Must be executed in an ArcGIS Pro Python 3.7 installation.
-# Description: "Post-process predicted rasters" is a function that generalizes a predicted raster, applies a minimum mapping unit, and adds manually delineated classes.
+# Description: "Post-process categorical rasters" is a function that generalizes a predicted raster, applies a minimum mapping unit, and adds manually delineated classes.
 # ---------------------------------------------------------------------------
 
-# Define a function to post-process predicted raster
-def postprocess_predicted_raster(**kwargs):
+# Define a function to post-process categorical raster
+def postprocess_categorical_raster(**kwargs):
     """
-    Description: generalizes predicted raster to minimum mapping unit and adds classes
-    Inputs: 'minimum_count' -- the number of cells to be used as the minimum size for contiguous cells of a same value to be retained
+    Description: generalizes categorical raster to minimum mapping unit and adds classes
+    Inputs: 'minimum_count' -- the number of cells to be used as the minimum size for adjacent cells of a same value to be retained
             'stream_value' -- integer value to use for stream corridors
             'water_value' -- integer value to use for water
             'pipeline_value' -- integer value to use for pipelines
             'infrastructure_value' -- integer value to use for infrastructure
+            'conditional_statement' -- a statement of values to select for proximity to pipeline and infrastructure
             'attribute_dictionary' -- a dictionary of name and value pairs for the map schema
             'work_geodatabase' -- a geodatabase to store temporary results
             'input_array' -- an array containing the area raster (must be first), the predicted raster, the infrastructure feature class, the infrastructure raster, the segments feature class, the pipeline raster, and the stream raster
             'output_array' -- an array containing the output raster
     Returned Value: Returns a raster to disk
-    Preconditions: requires a predicted raster of geomorphology or vegetation type
+    Preconditions: requires a predicted categorical raster
     """
 
     # Import packages
@@ -29,7 +30,6 @@ def postprocess_predicted_raster(**kwargs):
     from arcpy.sa import BoundaryClean
     from arcpy.sa import Con
     from arcpy.sa import ExtractByAttributes
-    from arcpy.sa import ExtractByMask
     from arcpy.sa import IsNull
     from arcpy.sa import MajorityFilter
     from arcpy.sa import Nibble
@@ -47,6 +47,7 @@ def postprocess_predicted_raster(**kwargs):
     water_value = kwargs['water_value']
     pipelines_value = kwargs['pipeline_value']
     infrastructure_value = kwargs['infrastructure_value']
+    conditional_statement = kwargs['conditional_statement']
     attribute_dictionary = kwargs['attribute_dictionary']
     work_geodatabase = kwargs['work_geodatabase']
     area_raster = kwargs['input_array'][0]
@@ -226,15 +227,15 @@ def postprocess_predicted_raster(**kwargs):
     # Calculate regions
     print(f'\tCalculating regions...')
     iteration_start = time.time()
+    # Create conditional raster for sensitivity to pipelines and infrastructure
+    proximity_raster = Con(raster_majority, 1, 0, conditional_statement)
     # Set null where infrastructure has contaminated predictions
     print('\t\tRemoving infrastructure errors...')
-    raster_remove_1 = SetNull((Raster(infrastructure_zonal) > 0)
-                              & ((raster_majority == 1) | (raster_majority == 2) | (raster_majority == 3)),
+    raster_remove_1 = SetNull((Raster(infrastructure_zonal) > 0) & (proximity_raster == 1),
                               raster_majority)
     # Set null where pipelines have contaminated predictions
     print('\t\tRemoving pipeline errors...')
-    raster_remove_2 = SetNull((Raster(pipeline_zonal) > 0)
-                              & ((raster_majority == 1) | (raster_majority == 2) | (raster_majority == 3)),
+    raster_remove_2 = SetNull((Raster(pipeline_zonal) > 0) & (proximity_raster == 1),
                               raster_remove_1)
     # Calculate regions
     print('\t\tCalculating contiguous value areas...')
@@ -353,5 +354,5 @@ def postprocess_predicted_raster(**kwargs):
         arcpy.management.Delete(input_integer)
 
     # Return success message
-    out_process = f'Successfully post-processed predicted raster.'
+    out_process = f'Successfully post-processed categorical raster.'
     return out_process

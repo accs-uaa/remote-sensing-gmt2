@@ -32,10 +32,8 @@ merge_folder = paste(project_folder,
                      round_date,
                      sep = '/')
 
-# Import required libraries for geospatial processing: sp, raster, rgdal, and stringr.
-library(sp)
+# Import libraries
 library(raster)
-library(rgdal)
 
 #### MERGE SURFICIAL FEATURES
 

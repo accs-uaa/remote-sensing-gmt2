@@ -38,7 +38,7 @@ grid_list = c('A4', 'A5', 'A6', 'A7',
               'E1', 'E2', 'E3', 'E4', 'E5')
 grid_length = length(grid_list)
 
-# Import required libraries for geospatial processing: dplyr, raster, rgdal, sp, and stringr.
+# Import libraries
 library(dplyr)
 library(raster)
 library(sf)

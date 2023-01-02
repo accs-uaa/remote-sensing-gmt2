@@ -2,13 +2,13 @@
 # ---------------------------------------------------------------------------
 # Merge existing vegetation type rasters
 # Author: Timm Nawrocki, Alaska Center for Conservation Science
-# Last Updated: 2022-12-15
+# Last Updated: 2022-12-26
 # Usage: Code chunks must be executed sequentially in R Studio or R Studio Server installation.
 # Description: "Merge existing vegetation type rasters" merges the predicted grid rasters into a single output raster.
 # ---------------------------------------------------------------------------
 
 # Define round date
-round_date = 'round_20221209'
+round_date = 'round_20221219'
 
 # Set root directory
 drive = 'N:'
@@ -34,13 +34,11 @@ merge_folder = paste(project_folder,
                      'vegetation_type',
                      sep = '/')
 
-# Import required libraries for geospatial processing: sp, raster, rgdal, and stringr.
-library(sp)
+# Import libraries
 library(raster)
-library(rgdal)
 
 # Define output file
-output_raster = paste(output_folder, 
+output_raster = paste(merge_folder, 
                       'GMT2_ExistingVegetationType.tif',
                       sep = '/')
 
@@ -48,7 +46,7 @@ output_raster = paste(output_folder,
 if (!file.exists(output_raster)) {
   
   # Generate list of raster img files from input folder
-  raster_files = list.files(path = input_folder,
+  raster_files = list.files(path = raster_folder,
                             pattern = paste('..*.tif$', sep = ''),
                             full.names = TRUE)
   count = length(raster_files)
